@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="90" viewBox="0 0 320 90">
+    <g transform="translate(40,45)">
+      <polygon points="0,-22 18,-6 0,24 -18,-6" fill="#C8A04B" stroke="#9C6B0B" stroke-width="2"/>
+      <polygon points="0,-22 18,-6 0,0 -18,-6" fill="#ffffff" opacity="0.5"/>
+    </g>
+    <text x="78" y="56" font-family="Georgia, serif" font-size="42" font-weight="700" fill="#C8A04B" letter-spacing="2">Jewelly</text>
+  </svg>

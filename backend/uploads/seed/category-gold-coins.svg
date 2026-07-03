@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 800 800">
+    <rect width="800" height="800" fill="#FCEDB6"/>
+    <circle cx="400" cy="400" r="300" fill="#E7C25A" opacity="0.55"/>
+    
+    <circle cx="400" cy="420" r="180" fill="#FFD964" stroke="#9C6B0B" stroke-width="14"/>
+    <circle cx="400" cy="420" r="150" fill="none" stroke="#9C6B0B" stroke-width="4" opacity="0.6"/>
+    <text x="400" y="400" text-anchor="middle" font-family="Georgia, serif" font-size="64" font-weight="700" fill="#5A3D08">999</text>
+    <text x="400" y="470" text-anchor="middle" font-family="Georgia, serif" font-size="40" fill="#5A3D08">GOLD</text>
+    <text x="400" y="700" text-anchor="middle" font-family="Georgia, serif" font-size="40" font-weight="600" fill="#5A3D08">Gold Coins</text>
+  </svg>

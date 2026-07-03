@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 800 800">
+    <rect width="800" height="800" fill="#15392E"/>
+    <circle cx="400" cy="400" r="300" fill="#0E261F" opacity="0.55"/>
+    
+    
+      <circle cx="290" cy="250" r="16" fill="none" stroke="#E9C46A" stroke-width="10"/>
+      <line x1="290" y1="266" x2="290" y2="360" stroke="#E9C46A" stroke-width="8"/>
+      <circle cx="290" cy="410" r="46" fill="#F2D27C" stroke="#E9C46A" stroke-width="8"/>
+      <circle cx="276" cy="396" r="12" fill="#ffffff" opacity="0.5"/>
+      <circle cx="510" cy="250" r="16" fill="none" stroke="#E9C46A" stroke-width="10"/>
+      <line x1="510" y1="266" x2="510" y2="360" stroke="#E9C46A" stroke-width="8"/>
+      <circle cx="510" cy="410" r="46" fill="#F2D27C" stroke="#E9C46A" stroke-width="8"/>
+      <circle cx="496" cy="396" r="12" fill="#ffffff" opacity="0.5"/>
+    <text x="400" y="700" text-anchor="middle" font-family="Georgia, serif" font-size="40" font-weight="600" fill="#EAF3EE">Gifts</text>
+  </svg>
