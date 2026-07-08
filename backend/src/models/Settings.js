@@ -56,7 +56,7 @@ const settingsSchema = new mongoose.Schema(
     },
 
     seo: {
-      metaTitle: { type: String, default: 'Parivar Jewellers — Fine Gold & Diamond Jewellery' },
+      metaTitle: { type: String, default: 'Parivar Jewellers - Gold, Silver, Diamond Jewellery Store in Mehsana' },
       metaDescription: {
         type: String,
         default: 'Shop BIS hallmarked gold, certified diamond and sterling silver jewellery online.',

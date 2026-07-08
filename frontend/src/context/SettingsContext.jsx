@@ -7,6 +7,7 @@ const SettingsContext = createContext(null);
 const DEFAULTS = {
   siteName: 'Parivar Jewellers',
   tagline: 'Parivar Jewellers - Gold, Silver, Diamond Jewellery Store in Mehsana',
+  seo: { metaTitle: 'Parivar Jewellers - Gold, Silver, Diamond Jewellery Store in Mehsana' },
   logo: '',
   currency: { code: 'INR', symbol: '₹' },
   contact: { email: 'support@jewelly.com', phone: '+91 82829 69651', address: '' },
