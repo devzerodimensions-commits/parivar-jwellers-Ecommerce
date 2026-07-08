@@ -6,15 +6,15 @@ const SettingsContext = createContext(null);
 // Sensible defaults so the UI renders before settings load.
 const DEFAULTS = {
   siteName: 'Parivar Jewellers',
-  tagline: 'Timeless Jewellery, Crafted for You',
+  tagline: 'Parivar Jewellers - Gold, Silver, Diamond Jewellery Store in Mehsana',
   logo: '',
   currency: { code: 'INR', symbol: '₹' },
-  contact: { email: 'support@jewelly.com', phone: '+91 90000 00000', address: '' },
+  contact: { email: 'support@jewelly.com', phone: '+91 82829 69651', address: '' },
   social: {},
   shipping: { freeShippingThreshold: 5000, flatRate: 99 },
   tax: { rate: 3 },
   enquiryMode: false,
-  footer: { aboutText: '', copyright: '© Jewelly' },
+  footer: { aboutText: 'Parivar Jewellers - Gold, Silver, Diamond Jewellery Store in Mehsana', copyright: '© Parivar Jewellers. All rights reserved.' },
   announcements: [],
 };
 

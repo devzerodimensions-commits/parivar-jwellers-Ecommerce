@@ -5,7 +5,7 @@ const settingsSchema = new mongoose.Schema(
   {
     key: { type: String, default: 'global', unique: true }, // singleton guard
     siteName: { type: String, default: 'Parivar Jewellers' },
-    tagline: { type: String, default: 'Timeless Jewellery, Crafted for You' },
+    tagline: { type: String, default: 'Parivar Jewellers - Gold, Silver, Diamond Jewellery Store in Mehsana' },
     logo: String,
     favicon: String,
 
@@ -16,7 +16,7 @@ const settingsSchema = new mongoose.Schema(
 
     contact: {
       email: { type: String, default: 'support@jewelly.com' },
-      phone: { type: String, default: '+91 90000 00000' },
+      phone: { type: String, default: '+91 82829 69651' },
       whatsapp: String,
       address: { type: String, default: 'Mumbai, Maharashtra, India' },
     },
@@ -67,7 +67,7 @@ const settingsSchema = new mongoose.Schema(
     footer: {
       aboutText: {
         type: String,
-        default: 'Parivar Jewellers crafts BIS-hallmarked gold, certified diamond and silver jewellery with complete transparency and lifetime maintenance.',
+        default: 'Parivar Jewellers - Gold, Silver, Diamond Jewellery Store in Mehsana',
       },
       copyright: { type: String, default: '© Parivar Jewellers. All rights reserved.' },
     },

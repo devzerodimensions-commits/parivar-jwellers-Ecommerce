@@ -7,7 +7,7 @@
  *
  * Used by every Enquiry button across the site.
  */
-export const ENQUIRY_PHONE = import.meta.env.VITE_ENQUIRY_PHONE || '+919876543210';
+export const ENQUIRY_PHONE = import.meta.env.VITE_ENQUIRY_PHONE || '+91 82829 69651';
 
 // Dialer-safe tel: href — keep only digits and an optional leading "+".
 export const ENQUIRY_TEL_HREF = `tel:${ENQUIRY_PHONE.replace(/[^\d+]/g, '')}`;
