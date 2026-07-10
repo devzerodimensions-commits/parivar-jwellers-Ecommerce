@@ -64,7 +64,7 @@ const Navbar = () => {
               <img
                 src={settings.logo}
                 alt={settings.siteName}
-                className="h-14 w-auto object-contain md:h-16"
+                className="h-16 w-auto object-contain md:h-20"
               />
             ) : (
               <span className="font-serif text-2xl font-bold tracking-wide text-gold-600">
