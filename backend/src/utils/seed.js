@@ -255,7 +255,7 @@ const seed = async () => {
     {
       title: 'Contact',
       type: 'page',
-      content: '<p>We would love to help. Reach us at <strong>support@jewelly.com</strong> or <strong>+91 90000 00000</strong>, Mon–Sat, 10am–7pm IST. Visit our flagship boutique in Mumbai, Maharashtra.</p>',
+      content: '<p>We would love to help. Reach us at <strong>support@jewelly.com</strong> or <strong>+91 82829 69651</strong>, Mon–Sat, 10am–7pm IST.</p><p>Visit our store: <strong>G-58, Silicon Skyland, Opp Kashi Vishvanath Mahadev Mandir, Radhanpur Road, Gujarat 384002</strong>.</p>',
       metaTitle: 'Contact Jewelly',
       metaDescription: 'Get in touch with the Jewelly team.',
     },
@@ -296,13 +296,13 @@ const seed = async () => {
   await Settings.create({
     key: 'global',
     siteName: 'Parivar Jewellers',
-    tagline: 'Timeless Jewellery, Crafted for You',
+    tagline: 'Parivar Jewellers - Gold, Silver, Diamond Jewellery Store in Mehsana',
     logo: '', // show the brand name as a text wordmark (upload a real logo in Admin → Settings)
     contact: {
       email: 'support@jewelly.com',
-      phone: '+91 90000 00000',
-      whatsapp: '+91 90000 00000',
-      address: 'Flagship Boutique, Marine Drive, Mumbai, Maharashtra 400020',
+      phone: '+91 82829 69651',
+      whatsapp: '+91 82829 69651',
+      address: 'G-58, Silicon Skyland, Opp Kashi Vishvanath Mahadev Mandir, Radhanpur Road, Gujarat 384002',
     },
     social: {
       facebook: 'https://facebook.com',

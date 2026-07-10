@@ -10,7 +10,7 @@ const DEFAULTS = {
   seo: { metaTitle: 'Parivar Jewellers - Gold, Silver, Diamond Jewellery Store in Mehsana' },
   logo: '',
   currency: { code: 'INR', symbol: '₹' },
-  contact: { email: 'support@jewelly.com', phone: '+91 82829 69651', address: '' },
+  contact: { email: 'support@jewelly.com', phone: '+91 82829 69651', address: 'G-58, Silicon Skyland, Opp Kashi Vishvanath Mahadev Mandir, Radhanpur Road, Gujarat 384002' },
   social: {},
   shipping: { freeShippingThreshold: 5000, flatRate: 99 },
   tax: { rate: 3 },

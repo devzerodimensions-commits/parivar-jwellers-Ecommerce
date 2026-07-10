@@ -18,7 +18,7 @@ const settingsSchema = new mongoose.Schema(
       email: { type: String, default: 'support@jewelly.com' },
       phone: { type: String, default: '+91 82829 69651' },
       whatsapp: String,
-      address: { type: String, default: 'Mumbai, Maharashtra, India' },
+      address: { type: String, default: 'G-58, Silicon Skyland, Opp Kashi Vishvanath Mahadev Mandir, Radhanpur Road, Gujarat 384002' },
     },
 
     social: {
