@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaFacebookF, FaInstagram, FaYoutube, FaTwitter } from 'react-icons/fa';
+import { FaFacebookF, FaInstagram, FaYoutube, FaTwitter, FaMapMarkerAlt } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import api from '../../api/axios.js';
 import { useSettings } from '../../context/SettingsContext.jsx';
@@ -51,6 +51,12 @@ const Footer = () => {
           <p className="mt-3 text-sm leading-relaxed text-cream/60">
             {settings.footer?.aboutText || settings.tagline}
           </p>
+          {settings.contact?.address && (
+            <p className="mt-4 flex items-start gap-2 text-sm text-cream/70">
+              <FaMapMarkerAlt className="mt-1 shrink-0 text-gold-400" />
+              <span>{settings.contact.address}</span>
+            </p>
+          )}
           <div className="mt-4 flex gap-3">
             {social.facebook && <Social href={social.facebook}><FaFacebookF /></Social>}
             {social.instagram && <Social href={social.instagram}><FaInstagram /></Social>}
