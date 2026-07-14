@@ -12,11 +12,11 @@ start "MongoDB" "C:\Users\Admin\mongodb80\mongodb-win32-x86_64-windows-8.0.23\bi
 timeout /t 6 /nobreak >nul
 
 echo [2/3] Starting Backend API (port 5000)...
-start "Jewelly Backend" cmd /k "cd /d C:\Users\Admin\Desktop\jewelly-code\backend && npm start"
+start "Parivar Backend" /D "%~dp0backend" cmd /k "npm run dev"
 timeout /t 5 /nobreak >nul
 
 echo [3/3] Starting Frontend (port 5173)...
-start "Jewelly Frontend" cmd /k "cd /d C:\Users\Admin\Desktop\jewelly-code\frontend && npm run dev"
+start "Parivar Frontend" /D "%~dp0frontend" cmd /k "npm run dev"
 timeout /t 9 /nobreak >nul
 
 echo.

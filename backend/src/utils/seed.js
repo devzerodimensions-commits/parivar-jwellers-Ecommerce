@@ -299,6 +299,7 @@ const seed = async () => {
     tagline: 'Parivar Jewellers - Gold, Silver, Diamond Jewellery Store in Mehsana',
     logo: '/uploads/parivar-logo.png',
     favicon: '/uploads/parivar-favicon.png',
+    enquiryMode: true,
     contact: {
       email: 'support@jewelly.com',
       phone: '+91 82829 69651',
