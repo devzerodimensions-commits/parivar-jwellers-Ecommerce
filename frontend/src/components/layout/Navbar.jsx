@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import {
   FaSearch,
@@ -9,12 +9,18 @@ import {
   FaTimes,
   FaSignOutAlt,
   FaThLarge,
+  FaChevronDown,
 } from 'react-icons/fa';
-import api from '../../api/axios.js';
 import { useCart } from '../../context/CartContext.jsx';
 import { useWishlist } from '../../context/WishlistContext.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useSettings } from '../../context/SettingsContext.jsx';
+import { MEGA_MENU, menuLink } from '../../config/megaMenu.js';
+
+const navLinkClass = ({ isActive }) =>
+  `text-sm font-medium transition-colors hover:text-gold-700 ${
+    isActive ? 'text-gold-700' : 'text-charcoal/80'
+  }`;
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -23,14 +29,9 @@ const Navbar = () => {
   const { user, logout, isAdmin } = useAuth();
   const settings = useSettings();
 
-  const [categories, setCategories] = useState([]);
   const [term, setTerm] = useState('');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
-
-  useEffect(() => {
-    api.get('/categories').then((res) => setCategories(res.data.categories)).catch(() => {});
-  }, []);
 
   const onSearch = (e) => {
     e.preventDefault();
@@ -40,11 +41,6 @@ const Navbar = () => {
       setMobileOpen(false);
     }
   };
-
-  const navLinkClass = ({ isActive }) =>
-    `text-sm font-medium transition-colors hover:text-gold-700 ${
-      isActive ? 'text-gold-700' : 'text-charcoal/80'
-    }`;
 
   return (
     <header className="sticky top-0 z-40 border-b border-charcoal/10 bg-white/95 backdrop-blur">
@@ -145,22 +141,20 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Category nav (desktop) */}
-        <nav className="hidden items-center gap-7 pb-3 lg:flex">
+        {/* Category mega-menu (desktop) */}
+        <nav className="hidden items-center gap-6 pb-3 lg:flex">
           <NavLink to="/shop" className={navLinkClass}>
             All Jewellery
           </NavLink>
-          {categories.map((c) => (
-            <NavLink key={c._id} to={`/category/${c.slug}`} className={navLinkClass}>
-              {c.name}
-            </NavLink>
+          {MEGA_MENU.map((group) => (
+            <MegaGroup key={group.title} group={group} />
           ))}
         </nav>
       </div>
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="border-t border-charcoal/10 bg-white px-4 py-4 lg:hidden">
+        <div className="max-h-[80vh] overflow-y-auto border-t border-charcoal/10 bg-white px-4 py-4 lg:hidden">
           <form onSubmit={onSearch} className="mb-4">
             <div className="relative">
               <input
@@ -174,19 +168,90 @@ const Navbar = () => {
               </button>
             </div>
           </form>
-          <div className="flex flex-col gap-1">
-            <MobileLink to="/shop" onClick={() => setMobileOpen(false)}>
-              All Jewellery
-            </MobileLink>
-            {categories.map((c) => (
-              <MobileLink key={c._id} to={`/category/${c.slug}`} onClick={() => setMobileOpen(false)}>
-                {c.name}
-              </MobileLink>
-            ))}
-          </div>
+          <Link
+            to="/shop"
+            onClick={() => setMobileOpen(false)}
+            className="block rounded px-2 py-2 text-sm font-semibold hover:bg-cream"
+          >
+            All Jewellery
+          </Link>
+          {MEGA_MENU.map((group) => (
+            <MobileGroup key={group.title} group={group} onNavigate={() => setMobileOpen(false)} />
+          ))}
         </div>
       )}
     </header>
+  );
+};
+
+// Desktop: a nav label that reveals a dropdown panel of its items on hover.
+const MegaGroup = ({ group }) => {
+  const [open, setOpen] = useState(false);
+  const colClass =
+    group.cols === 3 ? 'grid-cols-3' : group.cols === 2 ? 'grid-cols-2' : 'grid-cols-1';
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button className="flex items-center gap-1 text-sm font-medium text-charcoal/80 transition-colors hover:text-gold-700">
+        {group.title}
+        <FaChevronDown className="text-[9px] opacity-70" />
+      </button>
+      {open && (
+        <div className="absolute left-0 top-full z-50 pt-3">
+          <div className="rounded-lg border border-charcoal/10 bg-white p-5 shadow-card">
+            <p className="mb-3 border-b border-charcoal/10 pb-2 text-xs font-semibold uppercase tracking-wide text-gold-700">
+              {group.title}
+            </p>
+            <ul className={`grid gap-x-8 gap-y-2 ${colClass}`}>
+              {group.items.map((item) => (
+                <li key={item}>
+                  <Link
+                    to={menuLink(item)}
+                    className="block whitespace-nowrap text-sm text-charcoal/75 transition-colors hover:text-gold-700"
+                  >
+                    {item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Mobile: an expandable accordion group.
+const MobileGroup = ({ group, onNavigate }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border-b border-charcoal/5">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between px-2 py-2.5 text-sm font-semibold"
+      >
+        {group.title}
+        <FaChevronDown className={`text-xs transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && (
+        <ul className="grid grid-cols-2 gap-x-3 gap-y-0.5 pb-2 pl-2">
+          {group.items.map((item) => (
+            <li key={item}>
+              <Link
+                to={menuLink(item)}
+                onClick={onNavigate}
+                className="block py-1 text-sm text-charcoal/70 hover:text-gold-700"
+              >
+                {item}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 };
 
@@ -198,12 +263,6 @@ const Badge = ({ children }) => (
 
 const DropLink = ({ to, children }) => (
   <Link to={to} className="block px-4 py-2 text-sm hover:bg-cream">
-    {children}
-  </Link>
-);
-
-const MobileLink = ({ to, children, onClick }) => (
-  <Link to={to} onClick={onClick} className="rounded px-2 py-2 text-sm font-medium hover:bg-cream">
     {children}
   </Link>
 );
