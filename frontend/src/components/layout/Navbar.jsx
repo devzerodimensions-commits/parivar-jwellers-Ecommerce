@@ -201,7 +201,7 @@ const MegaGroup = ({ group }) => {
       </button>
       {open && (
         <div className="absolute left-0 top-full z-50 pt-3">
-          <div className="rounded-lg border border-charcoal/10 bg-white p-5 shadow-card">
+          <div className="w-max min-w-[11rem] max-w-[92vw] rounded-lg border border-charcoal/10 bg-white p-5 shadow-card">
             <p className="mb-3 border-b border-charcoal/10 pb-2 text-xs font-semibold uppercase tracking-wide text-gold-700">
               {group.title}
             </p>
