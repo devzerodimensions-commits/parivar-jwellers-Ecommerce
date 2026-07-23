@@ -9,8 +9,9 @@ import Settings from '../models/Settings.js';
 
 const GRAMS_PER_OZ = 31.1034768;
 const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
-// Approx India retail uplift over international spot: import duty (~6%) + GST (3%) + premium.
-const INDIA_FACTOR = 1.11;
+// India retail uplift over international spot: import duty (~6%) + GST (3%) + jeweller
+// premium — tuned so the auto rate matches published Indian (Gujarat) 24K rates.
+const INDIA_FACTOR = 1.152;
 
 let cache = null; // { usdPerOz, usdInr, spot24k, prevSpot, fetchedAt, updatedAt }
 
