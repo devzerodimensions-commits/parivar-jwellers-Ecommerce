@@ -45,6 +45,10 @@ const settingsSchema = new mongoose.Schema(
     // on product pages instead of Add to Cart.
     enquiryMode: { type: Boolean, default: false },
 
+    // Manual 24K gold rate override (INR per gram) shown in the top strip.
+    // 0 = use the automatic live market rate.
+    goldRate: { type: Number, default: 0 },
+
     shipping: {
       freeShippingThreshold: { type: Number, default: 5000 },
       flatRate: { type: Number, default: 99 },
