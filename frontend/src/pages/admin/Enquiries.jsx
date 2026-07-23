@@ -97,6 +97,11 @@ const Enquiries = () => {
                       )}
                     </p>
                   )}
+                  {e.subject && (
+                    <p className="mt-1 text-sm">
+                      Subject: <span className="font-medium">{e.subject}</span>
+                    </p>
+                  )}
                   <p className="mt-2 whitespace-pre-line text-sm text-charcoal/80">{e.message}</p>
                 </div>
 

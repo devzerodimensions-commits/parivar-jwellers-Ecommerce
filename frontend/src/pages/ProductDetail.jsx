@@ -17,7 +17,7 @@ import Rating from '../components/ui/Rating.jsx';
 import ProductGrid from '../components/ProductGrid.jsx';
 import ProductReviews from '../components/ProductReviews.jsx';
 import SectionHeading from '../components/ui/SectionHeading.jsx';
-import EnquiryButton from '../components/EnquiryButton.jsx';
+import EnquiryModal from '../components/EnquiryModal.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { useWishlist } from '../context/WishlistContext.jsx';
 import { useSettings } from '../context/SettingsContext.jsx';
@@ -36,6 +36,7 @@ const ProductDetail = () => {
   const [activeImg, setActiveImg] = useState(0);
   const [qty, setQty] = useState(1);
   const [variant, setVariant] = useState({});
+  const [enquiryOpen, setEnquiryOpen] = useState(false);
   const enquiryMode = settings.enquiryMode;
 
   useEffect(() => {
@@ -198,9 +199,16 @@ const ProductDetail = () => {
 
           <div className="mt-4 flex flex-wrap items-center gap-3">
             {enquiryMode ? (
-              <EnquiryButton className="btn-primary flex-1">
-                <FaEnvelopeOpenText /> Send Enquiry
-              </EnquiryButton>
+              <>
+                <button
+                  type="button"
+                  onClick={() => setEnquiryOpen(true)}
+                  className="btn-primary flex-1"
+                >
+                  <FaEnvelopeOpenText /> Send Enquiry
+                </button>
+                {enquiryOpen && <EnquiryModal product={product} onClose={() => setEnquiryOpen(false)} />}
+              </>
             ) : (
               <>
                 <div className="flex items-center rounded-md border border-charcoal/15">

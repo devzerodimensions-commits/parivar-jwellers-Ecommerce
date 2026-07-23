@@ -15,6 +15,7 @@ const enquirySchema = new mongoose.Schema(
       match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email'],
     },
     phone: { type: String, trim: true },
+    subject: { type: String, trim: true },
     message: { type: String, required: true },
     status: { type: String, enum: ['new', 'contacted', 'closed'], default: 'new' },
   },

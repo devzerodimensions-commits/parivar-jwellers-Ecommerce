@@ -6,7 +6,7 @@ import sendEmail from '../utils/sendEmail.js';
 
 // @route POST /api/enquiries  (public) — submit a product enquiry
 export const createEnquiry = asyncHandler(async (req, res) => {
-  const { product: productId, name, email, phone, message } = req.body;
+  const { product: productId, name, email, phone, subject, message } = req.body;
   if (!name || !email || !message) {
     res.status(400);
     throw new Error('Name, email and message are required.');
@@ -28,6 +28,7 @@ export const createEnquiry = asyncHandler(async (req, res) => {
     name,
     email,
     phone,
+    subject,
     message,
   });
 
@@ -38,10 +39,11 @@ export const createEnquiry = asyncHandler(async (req, res) => {
     if (to) {
       await sendEmail({
         to,
-        subject: `New enquiry${productName ? ` — ${productName}` : ''}`,
-        text: `From: ${name} <${email}> ${phone || ''}\nProduct: ${productName || '—'}\n\n${message}`,
+        subject: `New enquiry${subject ? `: ${subject}` : ''}${productName ? ` — ${productName}` : ''}`,
+        text: `From: ${name} <${email}> ${phone || ''}\nProduct: ${productName || '—'}\nSubject: ${subject || '—'}\n\n${message}`,
         html: `<p><strong>${name}</strong> &lt;${email}&gt; ${phone || ''}</p>
           <p>Product: ${productName || '—'}</p>
+          <p>Subject: ${subject || '—'}</p>
           <p>${message}</p>`,
       });
     }

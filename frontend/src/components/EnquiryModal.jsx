@@ -14,6 +14,7 @@ const EnquiryModal = ({ product, onClose }) => {
     name: user?.name || '',
     email: user?.email || '',
     phone: user?.phone || '',
+    subject: product ? `Enquiry: ${product.name}` : '',
     message: product ? `I'd like to enquire about "${product.name}". Please share the price and details.` : '',
   });
   const [busy, setBusy] = useState(false);
@@ -71,7 +72,11 @@ const EnquiryModal = ({ product, onClose }) => {
             </div>
           </div>
           <div>
-            <label className="label">Message</label>
+            <label className="label">Subject</label>
+            <input className="input" value={form.subject} onChange={set('subject')} placeholder="e.g. Price enquiry" />
+          </div>
+          <div>
+            <label className="label">Your Enquiry</label>
             <textarea className="input h-24 resize-none" required value={form.message} onChange={set('message')} />
           </div>
           <button disabled={busy} className="btn-primary w-full">

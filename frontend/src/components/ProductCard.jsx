@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaHeart, FaRegHeart, FaShoppingBag, FaEnvelopeOpenText } from 'react-icons/fa';
 import LazyImage from './ui/LazyImage.jsx';
 import Rating from './ui/Rating.jsx';
-import EnquiryButton from './EnquiryButton.jsx';
+import EnquiryModal from './EnquiryModal.jsx';
 import { useCart } from '../context/CartContext.jsx';
 import { useWishlist } from '../context/WishlistContext.jsx';
 import { useSettings } from '../context/SettingsContext.jsx';
@@ -14,6 +15,7 @@ const ProductCard = ({ product }) => {
   const settings = useSettings();
   const symbol = settings.currency?.symbol || '₹';
   const enquiryMode = settings.enquiryMode;
+  const [enquiryOpen, setEnquiryOpen] = useState(false);
 
   const price = effectivePrice(product);
   const off = discountPercent(product);
@@ -65,9 +67,13 @@ const ProductCard = ({ product }) => {
         )}
 
         {enquiryMode ? (
-          <EnquiryButton className="mt-3 flex w-full items-center justify-center gap-2 rounded-md border border-gold-500 py-2 text-sm font-medium text-gold-700 transition-colors hover:bg-gold-600 hover:text-white">
+          <button
+            type="button"
+            onClick={() => setEnquiryOpen(true)}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-md border border-gold-500 py-2 text-sm font-medium text-gold-700 transition-colors hover:bg-gold-600 hover:text-white"
+          >
             <FaEnvelopeOpenText className="text-xs" /> Enquire
-          </EnquiryButton>
+          </button>
         ) : (
           <div className="mt-2 flex items-end justify-between">
             <div>
@@ -89,6 +95,8 @@ const ProductCard = ({ product }) => {
           </div>
         )}
       </div>
+
+      {enquiryOpen && <EnquiryModal product={product} onClose={() => setEnquiryOpen(false)} />}
     </div>
   );
 };
