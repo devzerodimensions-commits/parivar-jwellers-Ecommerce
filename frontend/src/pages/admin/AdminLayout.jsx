@@ -47,7 +47,7 @@ const NAV = [
     icon: <FaShoppingCart />,
     children: [
       { to: '/admin/orders', label: 'Orders', icon: <FaShoppingCart />, cap: 'orders', hideInEnquiryMode: true },
-      { to: '/admin/coupons', label: 'Coupons', icon: <FaTicketAlt />, cap: 'coupons' },
+      { to: '/admin/coupons', label: 'Coupons', icon: <FaTicketAlt />, cap: 'coupons', hideInEnquiryMode: true },
       { to: '/admin/enquiries', label: 'Enquiries', icon: <FaEnvelopeOpenText />, cap: 'enquiries' },
     ],
   },
