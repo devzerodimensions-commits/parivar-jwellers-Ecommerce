@@ -87,7 +87,13 @@ const AdminLayout = () => {
           }
         : item
     )
-    .filter((item) => (item.type === 'group' ? item.children.length > 0 : can(item.cap)));
+    .filter((item) => (item.type === 'group' ? item.children.length > 0 : can(item.cap)))
+    // A group left with a single item is shown as a plain top-level link (no redundant dropdown).
+    .map((item) =>
+      item.type === 'group' && item.children.length === 1
+        ? { type: 'link', ...item.children[0] }
+        : item
+    );
 
   // Which group contains the active route?
   const activeGroupKey = nav.find(
