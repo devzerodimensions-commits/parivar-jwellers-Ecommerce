@@ -17,6 +17,7 @@ import uploadRoutes from './uploadRoutes.js';
 import mediaRoutes from './mediaRoutes.js';
 import enquiryRoutes from './enquiryRoutes.js';
 import dashboardRoutes from './dashboardRoutes.js';
+import { getGoldPrice } from '../controllers/goldController.js';
 
 const router = Router();
 
@@ -37,5 +38,6 @@ router.use('/upload', uploadRoutes);
 router.use('/media', mediaRoutes);
 router.use('/enquiries', enquiryRoutes);
 router.use('/dashboard', dashboardRoutes);
+router.get('/gold-price', getGoldPrice);
 
 export default router;
