@@ -18,6 +18,8 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
     lowStock,
     topProducts,
     newEnquiries,
+    totalEnquiries,
+    recentEnquiries,
   ] = await Promise.all([
     Order.countDocuments(),
     Product.countDocuments(),
@@ -34,6 +36,8 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
       .limit(10),
     Product.find().sort('-soldCount').limit(5).select('name soldCount price images'),
     Enquiry.countDocuments({ status: 'new' }),
+    Enquiry.countDocuments(),
+    Enquiry.find().sort('-createdAt').limit(8).select('name email subject productName status createdAt'),
   ]);
 
   // Last 30 days revenue series.
@@ -59,6 +63,8 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
       totalCustomers,
       pendingReviews,
       newEnquiries,
+      totalEnquiries,
+      recentEnquiries,
       totalRevenue: revenueAgg[0]?.total || 0,
       ordersByStatus: Object.fromEntries(statusCounts.map((s) => [s._id, s.count])),
       recentOrders,

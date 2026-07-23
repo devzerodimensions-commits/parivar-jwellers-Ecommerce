@@ -46,7 +46,7 @@ const NAV = [
     label: 'Sales',
     icon: <FaShoppingCart />,
     children: [
-      { to: '/admin/orders', label: 'Orders', icon: <FaShoppingCart />, cap: 'orders' },
+      { to: '/admin/orders', label: 'Orders', icon: <FaShoppingCart />, cap: 'orders', hideInEnquiryMode: true },
       { to: '/admin/coupons', label: 'Coupons', icon: <FaTicketAlt />, cap: 'coupons' },
       { to: '/admin/enquiries', label: 'Enquiries', icon: <FaEnvelopeOpenText />, cap: 'enquiries' },
     ],
@@ -78,7 +78,14 @@ const AdminLayout = () => {
   // Show only the sections this role can access.
   const nav = NAV
     .map((item) =>
-      item.type === 'group' ? { ...item, children: item.children.filter((c) => can(c.cap)) } : item
+      item.type === 'group'
+        ? {
+            ...item,
+            children: item.children.filter(
+              (c) => can(c.cap) && !(settings.enquiryMode && c.hideInEnquiryMode)
+            ),
+          }
+        : item
     )
     .filter((item) => (item.type === 'group' ? item.children.length > 0 : can(item.cap)));
 
