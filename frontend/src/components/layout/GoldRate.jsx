@@ -43,6 +43,11 @@ const GoldRate = () => {
           <b className="text-gold-800">₹{inr(data.rate22k)}</b>
           <span className="text-charcoal/45">/g</span>
         </span>
+        <span className="inline-flex items-baseline gap-1">
+          <span className="text-charcoal/55">18K</span>
+          <b className="text-gold-800">₹{inr(data.rate18k)}</b>
+          <span className="text-charcoal/45">/g</span>
+        </span>
         <span
           className={`inline-flex items-center gap-1 ${up ? 'text-green-600' : 'text-red-500'}`}
           title="Trend since last update"
