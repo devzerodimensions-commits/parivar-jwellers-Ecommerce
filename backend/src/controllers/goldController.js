@@ -8,7 +8,7 @@ import Settings from '../models/Settings.js';
 // sources are hit at most twice an hour; it auto-refreshes as the market moves.
 
 const GRAMS_PER_OZ = 31.1034768;
-const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
+const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
 // India retail uplift over international spot: import duty (~6%) + GST (3%) + jeweller
 // premium — tuned so the auto rate matches published Indian (Gujarat) 24K rates.
 const INDIA_FACTOR = 1.152;
