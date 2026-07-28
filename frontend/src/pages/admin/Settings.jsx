@@ -103,22 +103,6 @@ const Settings = () => {
               </span>
             </span>
           </label>
-
-          <div>
-            <label className="label">Gold Rate — 24K (₹ per gram)</label>
-            <input
-              type="number"
-              min="0"
-              className="input"
-              value={settings.goldRate || ''}
-              onChange={(e) => setTop('goldRate', Number(e.target.value) || 0)}
-              placeholder="Auto (live market rate)"
-            />
-            <p className="mt-1 text-xs text-charcoal/50">
-              Enter your daily 24K rate — this is shown in the top strip (22K/18K are auto-calculated).
-              Leave blank / 0 to use the <strong>automatic live rate</strong>.
-            </p>
-          </div>
         </Section>
 
         {/* Theme */}

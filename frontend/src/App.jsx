@@ -57,6 +57,7 @@ import AdminReviews from './pages/admin/Reviews.jsx';
 import AdminMedia from './pages/admin/Media.jsx';
 import AdminEnquiries from './pages/admin/Enquiries.jsx';
 import AdminSettings from './pages/admin/Settings.jsx';
+import AdminGoldRate from './pages/admin/GoldRate.jsx';
 
 const App = () => (
   <>
@@ -135,6 +136,7 @@ const App = () => (
       >
         <Route index element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
+        <Route path="gold-rate" element={<AdminGoldRate />} />
         <Route path="products" element={<AdminProducts />} />
         <Route path="products/new" element={<ProductForm />} />
         <Route path="products/:id/edit" element={<ProductForm />} />

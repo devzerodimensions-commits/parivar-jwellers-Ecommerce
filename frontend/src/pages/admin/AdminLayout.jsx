@@ -20,6 +20,7 @@ import {
   FaThList,
   FaPhotoVideo,
   FaEnvelopeOpenText,
+  FaCoins,
 } from 'react-icons/fa';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../../context/AuthContext.jsx';
@@ -29,6 +30,7 @@ import { useSettings } from '../../context/SettingsContext.jsx';
 // carries a `cap` — the section capability required to see it.
 const NAV = [
   { type: 'link', to: '/admin/dashboard', label: 'Dashboard', icon: <FaThLarge />, end: true, cap: 'dashboard' },
+  { type: 'link', to: '/admin/gold-rate', label: 'Gold Rate', icon: <FaCoins />, cap: 'settings' },
   {
     type: 'group',
     key: 'catalog',
