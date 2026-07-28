@@ -16,6 +16,7 @@ import Wishlist from './pages/Wishlist.jsx';
 import TrackOrder from './pages/TrackOrder.jsx';
 import CmsPage from './pages/CmsPage.jsx';
 import Policy from './pages/Policy.jsx';
+import GoldRateDisplay from './pages/GoldRateDisplay.jsx';
 import NotFound from './pages/NotFound.jsx';
 
 // Auth
@@ -117,6 +118,9 @@ const App = () => (
 
         <Route path="*" element={<NotFound />} />
       </Route>
+
+      {/* ---- Showroom gold-rate board (standalone, full-screen) ---- */}
+      <Route path="/gold-rate" element={<GoldRateDisplay />} />
 
       {/* ---- Admin authentication (shared standalone AuthLayout) ---- */}
       <Route element={<AuthLayout />}>
