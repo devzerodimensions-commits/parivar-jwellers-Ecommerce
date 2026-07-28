@@ -115,8 +115,8 @@ const Settings = () => {
               placeholder="Auto (live market rate)"
             />
             <p className="mt-1 text-xs text-charcoal/50">
-              Apna daily 24K rate daalein — top strip par yahi dikhega (22K/18K auto calculate honge).
-              Khali / 0 chhodein to <strong>automatic live rate</strong> chalega.
+              Enter your daily 24K rate — this is shown in the top strip (22K/18K are auto-calculated).
+              Leave blank / 0 to use the <strong>automatic live rate</strong>.
             </p>
           </div>
         </Section>
