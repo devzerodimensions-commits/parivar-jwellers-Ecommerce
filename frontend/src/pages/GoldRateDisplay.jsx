@@ -46,9 +46,11 @@ const GoldRateDisplay = () => {
       {/* Brand */}
       <header className="flex flex-col items-center gap-2 px-6 pt-8 text-center md:pt-12">
         {settings.logo ? (
-          <img src={settings.logo} alt={settings.siteName} className="h-20 w-auto object-contain md:h-28" />
+          <div className="inline-block rounded-2xl bg-cream px-8 py-5 shadow-2xl ring-1 ring-gold-400/20">
+            <img src={settings.logo} alt={settings.siteName} className="h-20 w-auto object-contain md:h-28" />
+          </div>
         ) : (
-          <h2 className="font-serif text-3xl font-bold text-gold-400 md:text-5xl">{settings.siteName}</h2>
+          <h2 className="font-serif text-4xl font-bold text-gold-400 md:text-5xl">{settings.siteName}</h2>
         )}
       </header>
 
