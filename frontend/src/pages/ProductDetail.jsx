@@ -76,6 +76,17 @@ const ProductDetail = () => {
     .map(([k, v]) => `${k}: ${v}`)
     .join(', ');
 
+  // Merge the dedicated jewellery fields + custom attributes into one spec list.
+  const specs = [
+    product.material && { key: 'Metal', value: product.material },
+    product.purity && { key: 'Purity', value: product.purity },
+    product.grossWeight && { key: 'Gross Weight', value: `${product.grossWeight} g` },
+    product.netWeight && { key: 'Net Weight', value: `${product.netWeight} g` },
+    product.gender && { key: 'For', value: product.gender },
+    product.occasion?.length && { key: 'Occasion', value: product.occasion.join(', ') },
+    ...(product.attributes || []),
+  ].filter(Boolean);
+
   return (
     <div className="container-page py-8">
       <Seo
@@ -270,12 +281,12 @@ const ProductDetail = () => {
           <h3 className="mb-3 font-serif text-2xl">Description</h3>
           <p className="whitespace-pre-line text-charcoal/70">{product.description}</p>
         </div>
-        {product.attributes?.length > 0 && (
+        {specs.length > 0 && (
           <div>
             <h3 className="mb-3 font-serif text-2xl">Specifications</h3>
             <table className="w-full text-sm">
               <tbody>
-                {product.attributes.map((a, i) => (
+                {specs.map((a, i) => (
                   <tr key={i} className="border-b border-charcoal/10">
                     <td className="py-2.5 pr-4 font-medium text-charcoal/60">{a.key}</td>
                     <td className="py-2.5 text-charcoal">{a.value}</td>
