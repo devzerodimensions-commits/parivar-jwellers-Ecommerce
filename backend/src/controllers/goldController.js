@@ -38,7 +38,7 @@ function payload(rate24k, { trend, source, updatedAt }) {
     currency: 'INR',
     unit: 'gram',
     rate24k: Math.round(rate24k),
-    rate22k: Math.round((rate24k * 22) / 24),
+    rate22k: Math.round(rate24k * 0.89), // 22K priced at 89% of 24K (client requirement)
     rate18k: Math.round((rate24k * 18) / 24),
     trend,
     source,
