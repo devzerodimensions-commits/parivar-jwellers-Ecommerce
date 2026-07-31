@@ -2,11 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import asyncHandler from '../middleware/asyncHandler.js';
-import cloudinary, {
-  cloudinaryEnabled,
-  CLOUDINARY_FOLDER,
-  uploadBufferToCloudinary,
-} from '../config/cloudinary.js';
+import cloudinary, { cloudinaryEnabled, CLOUDINARY_FOLDER } from '../config/cloudinary.js';
+import { storeImage } from '../utils/imageStore.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -135,33 +132,12 @@ export const deleteManyMedia = asyncHandler(async (req, res) => {
   res.json({ success: true, deleted });
 });
 
-// @route POST /api/media/save  (admin) — save an edited image.
-// multipart: `image` (the edited blob) + optional `path` to overwrite in place.
+// @route POST /api/media/save  (admin) — save an edited image (as a new webp).
 export const saveEditedMedia = asyncHandler(async (req, res) => {
   if (!req.file) {
     res.status(400);
     throw new Error('No image provided.');
   }
-
-  // Cloudinary: store the edited blob as a new image and return its URL.
-  if (cloudinaryEnabled) {
-    const result = await uploadBufferToCloudinary(req.file.buffer);
-    return res.status(201).json({ success: true, url: result.secure_url, path: result.public_id });
-  }
-
-  let rel = (req.body.path || '').toString().trim();
-  let target;
-  if (rel) {
-    target = safeTarget(rel);
-    if (!target) {
-      res.status(400);
-      throw new Error('Invalid file path.');
-    }
-  } else {
-    rel = `edited-${Date.now()}.png`;
-    target = path.resolve(UPLOADS, rel);
-  }
-  fs.mkdirSync(path.dirname(target), { recursive: true });
-  fs.writeFileSync(target, req.file.buffer);
-  res.status(201).json({ success: true, url: fileUrl(req, rel), path: rel });
+  const url = await storeImage(req.file);
+  res.status(201).json({ success: true, url });
 });

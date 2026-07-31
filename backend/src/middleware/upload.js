@@ -1,8 +1,5 @@
 import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
 import multer from 'multer';
-import { cloudinaryEnabled } from '../config/cloudinary.js';
 
 const allowed = /jpeg|jpg|png|webp|gif|svg/;
 const fileFilter = (req, file, cb) => {
@@ -11,38 +8,12 @@ const fileFilter = (req, file, cb) => {
   cb(new Error('Only image files (jpg, png, webp, gif, svg) are allowed.'));
 };
 
-let storage;
-
-if (cloudinaryEnabled) {
-  // Keep the file in memory; the controller streams the buffer to Cloudinary so
-  // uploads persist across redeploys (Render's local disk is wiped on deploy).
-  storage = multer.memoryStorage();
-} else {
-  // Local disk (development / when Cloudinary isn't configured).
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-  const uploadDir = path.join(__dirname, '..', '..', 'uploads');
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-  }
-  storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadDir),
-    filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname).toLowerCase();
-      const base = path
-        .basename(file.originalname, ext)
-        .replace(/[^a-z0-9]/gi, '-')
-        .toLowerCase()
-        .slice(0, 40);
-      cb(null, `${base}-${Date.now()}${ext}`);
-    },
-  });
-}
-
+// Keep uploads in memory; the controller (storeImage) converts each image to webp
+// and stores it on Cloudinary (persistent) or the local uploads/ folder.
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB source (webp output is far smaller)
 });
 
 export default upload;
