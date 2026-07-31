@@ -1,6 +1,6 @@
 # Parivar Jewellers — Project Documentation
 
-_Last updated: 28 July 2026_
+_Last updated: 31 July 2026_
 
 A complete guide to the Parivar Jewellers online store — where it lives, how it's built,
 every feature, and how to manage it. Written so anyone (owner, staff, or a future developer)
@@ -32,6 +32,7 @@ The store is a **MERN app** (MongoDB + Express + React + Node) deployed to free 
 | **Database** | [MongoDB Atlas](https://cloud.mongodb.com) (free M0, Mumbai) | Cluster `cluster0.wzxbvtn`, DB `jewelly`. Network access open (0.0.0.0/0). |
 | **Code** | [GitHub](https://github.com/devzerodimensions-commits/parivar-jwellers-Ecommerce) | Branch `main`. |
 | **Domain** | Hostinger (`parivarjewellers.co.in`) | DNS: `A @ → 216.24.57.1`, `CNAME www → parivarjewellers.onrender.com`. SSL auto by Render. |
+| **Images** | [Cloudinary](https://cloudinary.com) (free, 25 GB) | All admin-uploaded images (auto-converted to webp). Connected via the `CLOUDINARY_URL` env var on Render. |
 
 **Free-tier note:** the site "sleeps" after ~15 min of no visitors and takes ~40–50 seconds
 to wake on the next visit. This is normal for the free plan.
@@ -137,7 +138,35 @@ Because the store runs in **enquiry mode**, customers don't place orders — the
 
 ---
 
-## 8. Running the Site Locally (for development/testing)
+## 8. Images & Uploads (Cloudinary)
+
+Every image on the site (banners, product photos, logo…) is handled automatically:
+
+- **Auto-webp + resize:** whatever you upload (JPG, PNG, GIF) is converted to **webp** and
+  scaled down to a max width of 1920px — so images stay small and load fast. (Example: the
+  hero banners went from ~1.3 MB JPEGs to ~90 KB webp.)
+- **Permanent storage on Cloudinary:** admin-uploaded images are stored on
+  [Cloudinary](https://cloudinary.com) (free, 25 GB, fast CDN), connected via the
+  `CLOUDINARY_URL` environment variable on Render (cloud name `vkvxthg3`).
+
+**Why this is needed:** Render's free plan **wipes its local disk on every deploy**, so any
+image uploaded through the admin (that isn't part of the code) would disappear on the next
+update. Cloudinary keeps every upload safe permanently and serves it quickly worldwide.
+
+**Day-to-day: nothing to do** — just add images normally in the admin; they're converted,
+optimised, and stored automatically.
+
+**Managing it:**
+- Browse all uploaded images in **Admin → Media**, or at
+  [console.cloudinary.com](https://console.cloudinary.com).
+- The connection key lives in **Render → service → Environment → `CLOUDINARY_URL`**. If it's
+  ever removed, uploads fall back to Render's temporary disk (not permanent).
+- A few fixed images (logo, current hero banners) are committed with the code, so they stay
+  permanent regardless.
+
+---
+
+## 9. Running the Site Locally (for development/testing)
 
 The project folder: `C:\Users\Admin\Desktop\Parivar Jewellers`
 
@@ -159,7 +188,7 @@ Terminal 2:  cd frontend   →  npm run dev     (website, port 5173)
 
 ---
 
-## 9. Making Changes Live
+## 10. Making Changes Live
 
 The live site deploys from GitHub automatically. To publish a change:
 1. Edit the code.
@@ -170,7 +199,7 @@ The live site deploys from GitHub automatically. To publish a change:
 
 ---
 
-## 10. Summary of Work Done (this project)
+## 11. Summary of Work Done (this project)
 
 - ✅ Fixed password-reset flow (honest delivery, correct link, on-screen fallback).
 - ✅ Shop filter panel styling; bigger header logo; removed Blog; added Policy page.
@@ -187,10 +216,13 @@ The live site deploys from GitHub automatically. To publish a change:
 - ✅ Admin cleaned up for enquiry mode — Orders & Coupons hidden, enquiry-focused dashboard,
   Enquiries promoted to a top-level menu item.
 - ✅ Product page auto-shows jewellery specs.
+- ✅ **Persistent, optimised images** — every admin upload auto-converts to **webp** + resizes
+  (max 1920px), stored on **Cloudinary** so uploads survive redeploys; hero banners optimised
+  (~1.3 MB → ~90 KB) and the lost banners restored.
 
 ---
 
-## 11. Support / Notes
+## 12. Support / Notes
 
 - **Free-tier sleep:** first visit after idle takes ~40–50s. Upgrading the Render plan (paid)
   removes this.
