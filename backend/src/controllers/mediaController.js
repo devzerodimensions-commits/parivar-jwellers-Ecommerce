@@ -2,6 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import asyncHandler from '../middleware/asyncHandler.js';
+import cloudinary, {
+  cloudinaryEnabled,
+  CLOUDINARY_FOLDER,
+  uploadBufferToCloudinary,
+} from '../config/cloudinary.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,8 +35,29 @@ const listImages = (dir, baseRel = '') => {
   return out;
 };
 
-// @route GET /api/media  (admin) — list every image in the uploads folder
+// @route GET /api/media  (admin) — list every uploaded image
 export const getMedia = asyncHandler(async (req, res) => {
+  // Cloudinary: list resources in our folder.
+  if (cloudinaryEnabled) {
+    const result = await cloudinary.api.resources({
+      type: 'upload',
+      prefix: `${CLOUDINARY_FOLDER}/`,
+      max_results: 200,
+    });
+    const files = (result.resources || [])
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .map((r) => ({
+        name: `${r.public_id.split('/').pop()}.${r.format}`,
+        path: r.public_id, // used by delete
+        url: r.secure_url,
+        size: r.bytes,
+        folder: 'cloudinary',
+        modified: new Date(r.created_at).getTime(),
+      }));
+    return res.json({ success: true, count: files.length, files });
+  }
+
+  // Local disk fallback.
   const files = listImages(UPLOADS)
     .sort((a, b) => b.modified - a.modified)
     .map((f) => ({
@@ -53,8 +79,17 @@ const safeTarget = (rel) => {
   return target;
 };
 
-// @route DELETE /api/media?path=<relative path>  (admin)
+// @route DELETE /api/media?path=<relative path | cloudinary public_id>  (admin)
 export const deleteMedia = asyncHandler(async (req, res) => {
+  if (cloudinaryEnabled) {
+    if (!req.query.path) {
+      res.status(400);
+      throw new Error('Invalid or missing file path.');
+    }
+    await cloudinary.uploader.destroy(String(req.query.path));
+    return res.json({ success: true, message: 'File deleted.' });
+  }
+
   const target = safeTarget(req.query.path);
   if (!target) {
     res.status(400);
@@ -75,6 +110,20 @@ export const deleteManyMedia = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('No files specified.');
   }
+
+  if (cloudinaryEnabled) {
+    let deleted = 0;
+    for (const p of paths) {
+      try {
+        await cloudinary.uploader.destroy(String(p));
+        deleted += 1;
+      } catch {
+        /* skip failures */
+      }
+    }
+    return res.json({ success: true, deleted });
+  }
+
   let deleted = 0;
   for (const rel of paths) {
     const target = safeTarget(rel);
@@ -93,6 +142,13 @@ export const saveEditedMedia = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('No image provided.');
   }
+
+  // Cloudinary: store the edited blob as a new image and return its URL.
+  if (cloudinaryEnabled) {
+    const result = await uploadBufferToCloudinary(req.file.buffer);
+    return res.status(201).json({ success: true, url: result.secure_url, path: result.public_id });
+  }
+
   let rel = (req.body.path || '').toString().trim();
   let target;
   if (rel) {

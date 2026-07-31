@@ -17,6 +17,8 @@ services:
         value: 7d
       - key: MONGO_URI
         sync: false                  # paste your MongoDB Atlas connection string
+      - key: CLOUDINARY_URL
+        sync: false                  # Cloudinary "API Environment variable" — persistent image storage
       - key: CLIENT_URL
         sync: false                  # set to your final https://<name>.onrender.com
       - key: ADMIN_NAME

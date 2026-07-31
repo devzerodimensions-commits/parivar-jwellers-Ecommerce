@@ -1,8 +1,15 @@
 import asyncHandler from '../middleware/asyncHandler.js';
+import { cloudinaryEnabled, uploadBufferToCloudinary } from '../config/cloudinary.js';
 
-// Root-relative URL for an uploaded file, so it works on any domain
-// (localhost, tunnel, or a deployed host) served from the same origin.
-const fileUrl = (req, filename) => `/uploads/${filename}`;
+// Turn a multer file into a public URL. With Cloudinary the file is in memory —
+// stream it up and use the returned https URL. On local disk, serve /uploads/<name>.
+const toUrl = async (file) => {
+  if (cloudinaryEnabled) {
+    const result = await uploadBufferToCloudinary(file.buffer);
+    return result.secure_url;
+  }
+  return `/uploads/${file.filename}`;
+};
 
 // @route POST /api/upload  (admin) — single image, field name "image"
 export const uploadImage = asyncHandler(async (req, res) => {
@@ -10,7 +17,8 @@ export const uploadImage = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('No image file provided.');
   }
-  res.status(201).json({ success: true, url: fileUrl(req, req.file.filename) });
+  const url = await toUrl(req.file);
+  res.status(201).json({ success: true, url });
 });
 
 // @route POST /api/upload/multiple  (admin) — field name "images"
@@ -19,8 +27,6 @@ export const uploadImages = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('No image files provided.');
   }
-  res.status(201).json({
-    success: true,
-    urls: req.files.map((f) => fileUrl(req, f.filename)),
-  });
+  const urls = await Promise.all(req.files.map(toUrl));
+  res.status(201).json({ success: true, urls });
 });
