@@ -32,39 +32,45 @@ const listImages = (dir, baseRel = '') => {
   return out;
 };
 
-// @route GET /api/media  (admin) — list every uploaded image
+// A path belongs to Cloudinary (vs the local disk) when it's inside our folder.
+const isCloudinaryPath = (p) => cloudinaryEnabled && String(p).startsWith(`${CLOUDINARY_FOLDER}/`);
+
+// @route GET /api/media  (admin) — every image: local committed files + Cloudinary uploads
 export const getMedia = asyncHandler(async (req, res) => {
-  // Cloudinary: list resources in our folder.
+  // Local committed images (logo, hero banners, seed art) — always shown.
+  const files = listImages(UPLOADS).map((f) => ({
+    name: f.name,
+    path: f.rel,
+    url: fileUrl(req, f.rel),
+    size: f.size,
+    folder: f.rel.includes('/') ? f.rel.split('/')[0] : 'uploads',
+    modified: f.modified,
+  }));
+
+  // Cloudinary uploads (persistent) when configured.
   if (cloudinaryEnabled) {
-    const result = await cloudinary.api.resources({
-      type: 'upload',
-      prefix: `${CLOUDINARY_FOLDER}/`,
-      max_results: 200,
-    });
-    const files = (result.resources || [])
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-      .map((r) => ({
-        name: `${r.public_id.split('/').pop()}.${r.format}`,
-        path: r.public_id, // used by delete
-        url: r.secure_url,
-        size: r.bytes,
-        folder: 'cloudinary',
-        modified: new Date(r.created_at).getTime(),
-      }));
-    return res.json({ success: true, count: files.length, files });
+    try {
+      const result = await cloudinary.api.resources({
+        type: 'upload',
+        prefix: `${CLOUDINARY_FOLDER}/`,
+        max_results: 200,
+      });
+      for (const r of result.resources || []) {
+        files.push({
+          name: `${r.public_id.split('/').pop()}.${r.format}`,
+          path: r.public_id,
+          url: r.secure_url,
+          size: r.bytes,
+          folder: 'cloudinary',
+          modified: new Date(r.created_at).getTime(),
+        });
+      }
+    } catch {
+      /* if the Cloudinary listing fails, still return local images */
+    }
   }
 
-  // Local disk fallback.
-  const files = listImages(UPLOADS)
-    .sort((a, b) => b.modified - a.modified)
-    .map((f) => ({
-      name: f.name,
-      path: f.rel,
-      url: fileUrl(req, f.rel),
-      size: f.size,
-      folder: f.rel.includes('/') ? f.rel.split('/')[0] : 'uploads',
-      modified: f.modified,
-    }));
+  files.sort((a, b) => b.modified - a.modified);
   res.json({ success: true, count: files.length, files });
 });
 
@@ -76,18 +82,20 @@ const safeTarget = (rel) => {
   return target;
 };
 
-// @route DELETE /api/media?path=<relative path | cloudinary public_id>  (admin)
+// @route DELETE /api/media?path=<local rel path | cloudinary public_id>  (admin)
 export const deleteMedia = asyncHandler(async (req, res) => {
-  if (cloudinaryEnabled) {
-    if (!req.query.path) {
-      res.status(400);
-      throw new Error('Invalid or missing file path.');
-    }
-    await cloudinary.uploader.destroy(String(req.query.path));
+  const p = req.query.path;
+  if (!p) {
+    res.status(400);
+    throw new Error('Invalid or missing file path.');
+  }
+
+  if (isCloudinaryPath(p)) {
+    await cloudinary.uploader.destroy(String(p));
     return res.json({ success: true, message: 'File deleted.' });
   }
 
-  const target = safeTarget(req.query.path);
+  const target = safeTarget(p);
   if (!target) {
     res.status(400);
     throw new Error('Invalid or missing file path.');
@@ -108,25 +116,21 @@ export const deleteManyMedia = asyncHandler(async (req, res) => {
     throw new Error('No files specified.');
   }
 
-  if (cloudinaryEnabled) {
-    let deleted = 0;
-    for (const p of paths) {
-      try {
+  let deleted = 0;
+  for (const p of paths) {
+    try {
+      if (isCloudinaryPath(p)) {
         await cloudinary.uploader.destroy(String(p));
         deleted += 1;
-      } catch {
-        /* skip failures */
+      } else {
+        const target = safeTarget(p);
+        if (target && fs.existsSync(target) && fs.statSync(target).isFile()) {
+          fs.unlinkSync(target);
+          deleted += 1;
+        }
       }
-    }
-    return res.json({ success: true, deleted });
-  }
-
-  let deleted = 0;
-  for (const rel of paths) {
-    const target = safeTarget(rel);
-    if (target && fs.existsSync(target) && fs.statSync(target).isFile()) {
-      fs.unlinkSync(target);
-      deleted += 1;
+    } catch {
+      /* skip failures */
     }
   }
   res.json({ success: true, deleted });
