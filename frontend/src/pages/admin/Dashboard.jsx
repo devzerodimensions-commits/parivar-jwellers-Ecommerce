@@ -8,6 +8,9 @@ import {
   FaExclamationTriangle,
   FaEnvelopeOpenText,
   FaBell,
+  FaPlus,
+  FaImages,
+  FaCoins,
 } from 'react-icons/fa';
 import api from '../../api/axios.js';
 import Spinner from '../../components/ui/Spinner.jsx';
@@ -70,6 +73,27 @@ const Dashboard = () => {
   return (
     <div className="space-y-6">
       <h1 className="font-serif text-3xl font-bold">Dashboard</h1>
+
+      {/* Quick actions */}
+      <div className="flex flex-wrap gap-3">
+        <Link to="/admin/products/new" className="btn-primary">
+          <FaPlus /> Add Product
+        </Link>
+        <Link to="/admin/products" className="btn-outline">
+          <FaBoxOpen /> All Products
+        </Link>
+        {enquiryMode && (
+          <Link to="/admin/enquiries" className="btn-outline">
+            <FaEnvelopeOpenText /> Enquiries
+          </Link>
+        )}
+        <Link to="/admin/banners" className="btn-outline">
+          <FaImages /> Banners
+        </Link>
+        <Link to="/admin/gold-rate" className="btn-outline">
+          <FaCoins /> Gold Rate
+        </Link>
+      </div>
 
       {/* Stat cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

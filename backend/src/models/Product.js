@@ -44,7 +44,7 @@ const productSchema = new mongoose.Schema(
     shortDescription: String,
     description: { type: String, default: '' },
 
-    price: { type: Number, required: true, min: 0 },
+    price: { type: Number, min: 0, default: 0 }, // optional — in enquiry mode price is quoted on request
     salePrice: { type: Number, min: 0, default: null },
     costPrice: { type: Number, min: 0 },
 

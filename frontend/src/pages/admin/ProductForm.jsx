@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import api from '../../api/axios.js';
 import Spinner from '../../components/ui/Spinner.jsx';
 import ImageUploader from '../../components/admin/ImageUploader.jsx';
+import { useSettings } from '../../context/SettingsContext.jsx';
 
 const blank = {
   name: '',
@@ -39,6 +40,7 @@ const GENDERS = ['Women', 'Men', 'Unisex', 'Kids'];
 const ProductForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const settings = useSettings();
   const editing = Boolean(id);
 
   const [form, setForm] = useState(blank);
@@ -93,7 +95,7 @@ const ProductForm = () => {
     try {
       const payload = {
         ...form,
-        price: Number(form.price),
+        price: form.price === '' ? 0 : Number(form.price),
         salePrice: form.salePrice === '' ? null : Number(form.salePrice),
         stock: Number(form.stock),
         lowStockThreshold: Number(form.lowStockThreshold),
@@ -243,8 +245,19 @@ const ProductForm = () => {
         <div className="space-y-6">
           <section className="card space-y-4 p-6">
             <h3 className="font-serif text-lg">Pricing</h3>
-            <Field label="Price (₹)" type="number" value={form.price} onChange={set('price')} required />
+            <Field
+              label="Price (₹) — optional"
+              type="number"
+              value={form.price}
+              onChange={set('price')}
+              placeholder="Leave blank if quoting on enquiry"
+            />
             <Field label="Sale price (₹)" type="number" value={form.salePrice} onChange={set('salePrice')} />
+            {settings.enquiryMode && (
+              <p className="text-xs text-charcoal/40">
+                Prices are hidden on your website (enquiry mode) — you can leave this blank.
+              </p>
+            )}
           </section>
 
           <section className="card space-y-4 p-6">
