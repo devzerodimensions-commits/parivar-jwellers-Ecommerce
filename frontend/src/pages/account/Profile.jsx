@@ -52,6 +52,7 @@ const Profile = () => {
           <ImageUploader
             value={profile.avatar}
             endpoint="/users/avatar"
+            library={false}
             onChange={(url) => setProfile((p) => ({ ...p, avatar: url }))}
           />
         </div>
