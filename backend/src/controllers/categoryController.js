@@ -6,6 +6,7 @@ import Product from '../models/Product.js';
 export const getCategories = asyncHandler(async (req, res) => {
   const filter = req.query.all === 'true' ? {} : { isActive: true };
   if (req.query.featured === 'true') filter.isFeatured = true;
+  if (req.query.group) filter.group = req.query.group;
   const categories = await Category.find(filter).sort('order name').lean();
 
   // Attach product counts.

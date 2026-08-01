@@ -23,7 +23,7 @@ const Home = () => {
     Promise.all([
       api.get('/banners?position=hero'),
       api.get('/banners?position=promo'),
-      api.get('/categories?featured=true'),
+      api.get('/categories?group=shop&featured=true'),
       api.get('/products/featured?limit=8'),
       api.get('/products/new-arrivals?limit=8'),
       api.get('/products/best-sellers?limit=4'),

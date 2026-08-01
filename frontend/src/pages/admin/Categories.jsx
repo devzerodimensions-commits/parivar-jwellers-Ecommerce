@@ -12,6 +12,7 @@ const Categories = () => {
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState(blank);
   const [editId, setEditId] = useState(null);
+  const [tab, setTab] = useState('menu'); // 'menu' = top nav | 'shop' = home page
 
   const load = () =>
     api
@@ -25,7 +26,7 @@ const Categories = () => {
 
   const submit = async (e) => {
     e.preventDefault();
-    const payload = { ...form, parent: form.parent || null };
+    const payload = { ...form, parent: form.parent || null, group: tab };
     try {
       if (editId) await api.put(`/categories/${editId}`, payload);
       else await api.post('/categories', payload);
@@ -40,6 +41,7 @@ const Categories = () => {
 
   const edit = (c) => {
     setEditId(c._id);
+    setTab(c.group || 'shop');
     setForm({ name: c.name, description: c.description || '', image: c.image || '', parent: c.parent || '', isFeatured: c.isFeatured, isActive: c.isActive, order: c.order || 0 });
   };
 
@@ -55,14 +57,41 @@ const Categories = () => {
   };
 
   const nameById = Object.fromEntries(items.map((c) => [c._id, c.name]));
+  const visible = items.filter((c) => (c.group || 'shop') === tab);
+  const switchTab = (t) => {
+    setTab(t);
+    setEditId(null);
+    setForm(blank);
+  };
 
   return (
     <div>
-      <h1 className="mb-6 font-serif text-3xl font-bold">Categories</h1>
+      <div className="mb-6 flex flex-wrap items-center gap-4">
+        <h1 className="font-serif text-3xl font-bold">Categories</h1>
+        <div className="flex rounded-lg border border-charcoal/15 p-1">
+          {[
+            { k: 'menu', label: 'Menu (Top Nav)' },
+            { k: 'shop', label: 'Shop (Home)' },
+          ].map((t) => (
+            <button
+              key={t.k}
+              type="button"
+              onClick={() => switchTab(t.k)}
+              className={`rounded-md px-4 py-1.5 text-sm font-medium transition ${
+                tab === t.k ? 'bg-gold-600 text-white' : 'text-charcoal/60 hover:text-charcoal'
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
       <div className="grid gap-6 lg:grid-cols-[340px_1fr]">
         {/* Form */}
         <form onSubmit={submit} className="card h-fit space-y-4 p-6">
-          <h3 className="font-serif text-lg">{editId ? 'Edit Category' : 'Add Category'}</h3>
+          <h3 className="font-serif text-lg">
+            {editId ? 'Edit' : 'Add'} {tab === 'menu' ? 'Menu' : 'Shop'} Category
+          </h3>
           <div>
             <label className="label">Name</label>
             <input className="input" required value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
@@ -79,7 +108,7 @@ const Categories = () => {
               onChange={(e) => setForm((f) => ({ ...f, parent: e.target.value }))}
             >
               <option value="">— None (main category) —</option>
-              {items
+              {visible
                 .filter((c) => c._id !== editId)
                 .map((c) => (
                   <option key={c._id} value={c._id}>
@@ -127,7 +156,7 @@ const Categories = () => {
                 </tr>
               </thead>
               <tbody>
-                {items.map((c) => (
+                {visible.map((c) => (
                   <tr key={c._id} className="border-t border-charcoal/10">
                     <td className="p-3">
                       <div className="flex items-center gap-3">

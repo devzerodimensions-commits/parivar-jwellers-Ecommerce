@@ -153,34 +153,48 @@ const ProductForm = () => {
           <section className="card space-y-4 p-6">
             <Field label="Name" value={form.name} onChange={set('name')} required />
             <Field label="SKU (optional)" value={form.sku} onChange={set('sku')} placeholder="Leave blank if not needed" />
-            <div>
+            <div className="space-y-4">
               <label className="label">Categories</label>
-              <p className="mb-2 text-xs text-charcoal/50">
-                Tick every category this product should appear in — it can be in more than one.
+              <p className="-mt-2 text-xs text-charcoal/50">
+                Tick every category this product should appear in — Menu (top nav) and/or Shop (home).
+                It can be in more than one.
               </p>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {categories.map((c) => {
-                  const on = form.categories.includes(c._id);
-                  return (
-                    <label
-                      key={c._id}
-                      className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm ${
-                        on ? 'border-gold-400 bg-gold-50' : 'border-charcoal/15 hover:border-gold-300'
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={on}
-                        onChange={() => toggleCategory(c._id)}
-                        className="h-4 w-4 rounded text-gold-600 focus:ring-gold-500"
-                      />
-                      {c.name}
-                    </label>
-                  );
-                })}
-              </div>
+              {[
+                { grp: 'menu', label: 'Menu Categories (top navigation)' },
+                { grp: 'shop', label: 'Shop Categories (home page)' },
+              ].map(({ grp, label }) => {
+                const list = categories.filter((c) => (c.group || 'shop') === grp);
+                if (!list.length) return null;
+                return (
+                  <div key={grp}>
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gold-700">{label}</p>
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                      {list.map((c) => {
+                        const on = form.categories.includes(c._id);
+                        return (
+                          <label
+                            key={c._id}
+                            className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm ${
+                              on ? 'border-gold-400 bg-gold-50' : 'border-charcoal/15 hover:border-gold-300'
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={on}
+                              onChange={() => toggleCategory(c._id)}
+                              className="h-4 w-4 rounded text-gold-600 focus:ring-gold-500"
+                            />
+                            {c.parent ? <span className="text-charcoal/40">↳&nbsp;</span> : null}
+                            {c.name}
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
               {categories.length === 0 && (
-                <p className="mt-1 text-xs text-charcoal/40">No categories yet — add some in Products → Categories.</p>
+                <p className="text-xs text-charcoal/40">No categories yet — add some in Products → Categories.</p>
               )}
             </div>
             <Field label="Short description" value={form.shortDescription} onChange={set('shortDescription')} />

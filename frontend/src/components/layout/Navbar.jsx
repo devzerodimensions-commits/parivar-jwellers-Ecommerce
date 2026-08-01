@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import {
   FaSearch,
@@ -15,7 +15,7 @@ import { useCart } from '../../context/CartContext.jsx';
 import { useWishlist } from '../../context/WishlistContext.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useSettings } from '../../context/SettingsContext.jsx';
-import { MEGA_MENU, menuLink } from '../../config/megaMenu.js';
+import api from '../../api/axios.js';
 
 const navLinkClass = ({ isActive }) =>
   `text-sm font-medium transition-colors hover:text-gold-700 ${
@@ -32,6 +32,21 @@ const Navbar = () => {
   const [term, setTerm] = useState('');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
+  const [menuCats, setMenuCats] = useState([]);
+
+  useEffect(() => {
+    api.get('/categories?group=menu').then((r) => setMenuCats(r.data.categories)).catch(() => {});
+  }, []);
+
+  // Build the top-nav mega-menu from the "menu" category taxonomy (main + subs).
+  const menuGroups = menuCats
+    .filter((c) => !c.parent)
+    .map((m) => ({
+      _id: m._id,
+      title: m.name,
+      slug: m.slug,
+      children: menuCats.filter((c) => String(c.parent) === String(m._id)),
+    }));
 
   const onSearch = (e) => {
     e.preventDefault();
@@ -146,8 +161,8 @@ const Navbar = () => {
           <NavLink to="/shop" className={navLinkClass}>
             All Jewellery
           </NavLink>
-          {MEGA_MENU.map((group) => (
-            <MegaGroup key={group.title} group={group} />
+          {menuGroups.map((group) => (
+            <MegaGroup key={group._id} group={group} />
           ))}
         </nav>
       </div>
@@ -175,8 +190,8 @@ const Navbar = () => {
           >
             All Jewellery
           </Link>
-          {MEGA_MENU.map((group) => (
-            <MobileGroup key={group.title} group={group} onNavigate={() => setMobileOpen(false)} />
+          {menuGroups.map((group) => (
+            <MobileGroup key={group._id} group={group} onNavigate={() => setMobileOpen(false)} />
           ))}
         </div>
       )}
@@ -184,35 +199,38 @@ const Navbar = () => {
   );
 };
 
-// Desktop: a nav label that reveals a dropdown panel of its items on hover.
+// Desktop: a nav label that reveals a dropdown panel of its sub-categories on hover.
 const MegaGroup = ({ group }) => {
   const [open, setOpen] = useState(false);
-  const colClass =
-    group.cols === 3 ? 'grid-cols-3' : group.cols === 2 ? 'grid-cols-2' : 'grid-cols-1';
+  const n = group.children.length;
+  const colClass = n > 14 ? 'grid-cols-3' : n > 7 ? 'grid-cols-2' : 'grid-cols-1';
   return (
     <div
       className="relative"
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
-      <button className="flex items-center gap-1 text-sm font-medium text-charcoal/80 transition-colors hover:text-gold-700">
+      <Link
+        to={`/category/${group.slug}`}
+        className="flex items-center gap-1 text-sm font-medium text-charcoal/80 transition-colors hover:text-gold-700"
+      >
         {group.title}
-        <FaChevronDown className="text-[9px] opacity-70" />
-      </button>
-      {open && (
+        {n > 0 && <FaChevronDown className="text-[9px] opacity-70" />}
+      </Link>
+      {open && n > 0 && (
         <div className="absolute left-0 top-full z-50 pt-3">
           <div className="w-max min-w-[11rem] max-w-[92vw] rounded-lg border border-charcoal/10 bg-white p-5 shadow-card">
             <p className="mb-3 border-b border-charcoal/10 pb-2 text-xs font-semibold uppercase tracking-wide text-gold-700">
               {group.title}
             </p>
             <ul className={`grid gap-x-8 gap-y-2 ${colClass}`}>
-              {group.items.map((item) => (
-                <li key={item}>
+              {group.children.map((item) => (
+                <li key={item._id}>
                   <Link
-                    to={menuLink(item, group.title)}
+                    to={`/category/${item.slug}`}
                     className="block whitespace-nowrap text-sm text-charcoal/75 transition-colors hover:text-gold-700"
                   >
-                    {item}
+                    {item.name}
                   </Link>
                 </li>
               ))}
@@ -229,23 +247,30 @@ const MobileGroup = ({ group, onNavigate }) => {
   const [open, setOpen] = useState(false);
   return (
     <div className="border-b border-charcoal/5">
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between px-2 py-2.5 text-sm font-semibold"
-      >
-        {group.title}
-        <FaChevronDown className={`text-xs transition-transform ${open ? 'rotate-180' : ''}`} />
-      </button>
-      {open && (
+      <div className="flex items-center justify-between">
+        <Link
+          to={`/category/${group.slug}`}
+          onClick={onNavigate}
+          className="flex-1 px-2 py-2.5 text-sm font-semibold"
+        >
+          {group.title}
+        </Link>
+        {group.children.length > 0 && (
+          <button onClick={() => setOpen((v) => !v)} className="px-2 py-2.5" aria-label="Toggle sub-categories">
+            <FaChevronDown className={`text-xs transition-transform ${open ? 'rotate-180' : ''}`} />
+          </button>
+        )}
+      </div>
+      {open && group.children.length > 0 && (
         <ul className="grid grid-cols-2 gap-x-3 gap-y-0.5 pb-2 pl-2">
-          {group.items.map((item) => (
-            <li key={item}>
+          {group.children.map((item) => (
+            <li key={item._id}>
               <Link
-                to={menuLink(item, group.title)}
+                to={`/category/${item.slug}`}
                 onClick={onNavigate}
                 className="block py-1 text-sm text-charcoal/70 hover:text-gold-700"
               >
-                {item}
+                {item.name}
               </Link>
             </li>
           ))}
