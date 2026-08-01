@@ -48,7 +48,10 @@ const productSchema = new mongoose.Schema(
     salePrice: { type: Number, min: 0, default: null },
     costPrice: { type: Number, min: 0 },
 
-    category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+    // A product can belong to several store categories. `category` stays as the
+    // primary (first) one for backward compatibility and is auto-synced on save.
+    categories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
+    category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
     brand: { type: mongoose.Schema.Types.ObjectId, ref: 'Brand' },
     tags: [String],
 
@@ -119,6 +122,9 @@ productSchema.pre('save', function (next) {
   }
   // Treat a blank SKU as "no SKU" so the sparse unique index ignores it.
   if (!this.sku) this.sku = undefined;
+  // Keep `category` (primary) and `categories` (all) in sync.
+  if (this.categories?.length) this.category = this.categories[0];
+  else if (this.category) this.categories = [this.category];
   next();
 });
 

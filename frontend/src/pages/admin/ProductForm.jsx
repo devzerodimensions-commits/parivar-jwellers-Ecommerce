@@ -14,7 +14,7 @@ const blank = {
   description: '',
   price: '',
   salePrice: '',
-  category: '',
+  categories: [],
   brand: '',
   tags: '',
   stock: 0,
@@ -65,7 +65,7 @@ const ProductForm = () => {
         setForm({
           ...blank,
           ...p,
-          category: p.category?._id || '',
+          categories: (p.categories?.length ? p.categories : p.category ? [p.category] : []).map((c) => c._id || c),
           brand: p.brand?._id || '',
           tags: (p.tags || []).join(', '),
           salePrice: p.salePrice ?? '',
@@ -89,12 +89,19 @@ const ProductForm = () => {
       return { ...f, attributes };
     });
 
+  const toggleCategory = (cid) =>
+    setForm((f) => ({
+      ...f,
+      categories: f.categories.includes(cid) ? f.categories.filter((x) => x !== cid) : [...f.categories, cid],
+    }));
+
   const submit = async (e) => {
     e.preventDefault();
     setSaving(true);
     try {
       const payload = {
         ...form,
+        categories: form.categories,
         price: form.price === '' ? 0 : Number(form.price),
         salePrice: form.salePrice === '' ? null : Number(form.salePrice),
         stock: Number(form.stock),
@@ -108,6 +115,7 @@ const ProductForm = () => {
         brand: form.brand || undefined,
         attributes: form.attributes.filter((a) => a.key && a.value),
       };
+      delete payload.category; // backend derives the primary category from `categories`
       if (editing) {
         await api.put(`/products/${id}`, payload);
         toast.success('Product updated.');
@@ -144,16 +152,36 @@ const ProductForm = () => {
         <div className="space-y-6">
           <section className="card space-y-4 p-6">
             <Field label="Name" value={form.name} onChange={set('name')} required />
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="SKU (optional)" value={form.sku} onChange={set('sku')} placeholder="Leave blank if not needed" />
-              <Select label="Category" value={form.category} onChange={set('category')} required>
-                <option value="">Select category</option>
-                {categories.map((c) => (
-                  <option key={c._id} value={c._id}>
-                    {c.name}
-                  </option>
-                ))}
-              </Select>
+            <Field label="SKU (optional)" value={form.sku} onChange={set('sku')} placeholder="Leave blank if not needed" />
+            <div>
+              <label className="label">Categories</label>
+              <p className="mb-2 text-xs text-charcoal/50">
+                Tick every category this product should appear in — it can be in more than one.
+              </p>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {categories.map((c) => {
+                  const on = form.categories.includes(c._id);
+                  return (
+                    <label
+                      key={c._id}
+                      className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm ${
+                        on ? 'border-gold-400 bg-gold-50' : 'border-charcoal/15 hover:border-gold-300'
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={on}
+                        onChange={() => toggleCategory(c._id)}
+                        className="h-4 w-4 rounded text-gold-600 focus:ring-gold-500"
+                      />
+                      {c.name}
+                    </label>
+                  );
+                })}
+              </div>
+              {categories.length === 0 && (
+                <p className="mt-1 text-xs text-charcoal/40">No categories yet — add some in Products → Categories.</p>
+              )}
             </div>
             <Field label="Short description" value={form.shortDescription} onChange={set('shortDescription')} />
             <div>

@@ -5,7 +5,7 @@ import api from '../../api/axios.js';
 import Spinner from '../../components/ui/Spinner.jsx';
 import ImageUploader from '../../components/admin/ImageUploader.jsx';
 
-const blank = { name: '', description: '', image: '', isFeatured: false, isActive: true, order: 0 };
+const blank = { name: '', description: '', image: '', parent: '', isFeatured: false, isActive: true, order: 0 };
 
 const Categories = () => {
   const [items, setItems] = useState([]);
@@ -25,9 +25,10 @@ const Categories = () => {
 
   const submit = async (e) => {
     e.preventDefault();
+    const payload = { ...form, parent: form.parent || null };
     try {
-      if (editId) await api.put(`/categories/${editId}`, form);
-      else await api.post('/categories', form);
+      if (editId) await api.put(`/categories/${editId}`, payload);
+      else await api.post('/categories', payload);
       toast.success(editId ? 'Category updated.' : 'Category created.');
       setForm(blank);
       setEditId(null);
@@ -39,7 +40,7 @@ const Categories = () => {
 
   const edit = (c) => {
     setEditId(c._id);
-    setForm({ name: c.name, description: c.description || '', image: c.image || '', isFeatured: c.isFeatured, isActive: c.isActive, order: c.order || 0 });
+    setForm({ name: c.name, description: c.description || '', image: c.image || '', parent: c.parent || '', isFeatured: c.isFeatured, isActive: c.isActive, order: c.order || 0 });
   };
 
   const remove = async (id) => {
@@ -52,6 +53,8 @@ const Categories = () => {
       toast.error(err.message);
     }
   };
+
+  const nameById = Object.fromEntries(items.map((c) => [c._id, c.name]));
 
   return (
     <div>
@@ -67,6 +70,24 @@ const Categories = () => {
           <div>
             <label className="label">Description</label>
             <textarea className="input h-20 resize-none" value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} />
+          </div>
+          <div>
+            <label className="label">Parent category (optional)</label>
+            <select
+              className="input"
+              value={form.parent}
+              onChange={(e) => setForm((f) => ({ ...f, parent: e.target.value }))}
+            >
+              <option value="">— None (main category) —</option>
+              {items
+                .filter((c) => c._id !== editId)
+                .map((c) => (
+                  <option key={c._id} value={c._id}>
+                    {c.name}
+                  </option>
+                ))}
+            </select>
+            <p className="mt-1 text-xs text-charcoal/40">Pick a parent to make this a sub-category (like WordPress).</p>
           </div>
           <div>
             <label className="label">Image</label>
@@ -112,8 +133,14 @@ const Categories = () => {
                       <div className="flex items-center gap-3">
                         {c.image && <img src={c.image} alt="" className="h-9 w-9 rounded object-cover" />}
                         <div>
-                          <p className="font-medium">{c.name}</p>
-                          <p className="text-xs text-charcoal/40">/{c.slug}</p>
+                          <p className="font-medium">
+                            {c.parent && <span className="text-charcoal/40">↳ </span>}
+                            {c.name}
+                          </p>
+                          <p className="text-xs text-charcoal/40">
+                            /{c.slug}
+                            {c.parent && nameById[c.parent] ? ` · under ${nameById[c.parent]}` : ''}
+                          </p>
                         </div>
                       </div>
                     </td>

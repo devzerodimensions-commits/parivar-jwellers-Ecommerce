@@ -17,7 +17,9 @@ const buildStoreFilter = async (query) => {
     if (cat) {
       // include direct child categories too
       const children = await Category.find({ parent: cat._id }).select('_id');
-      filter.category = { $in: [cat._id, ...children.map((c) => c._id)] };
+      const ids = [cat._id, ...children.map((c) => c._id)];
+      // Match the multi-category field OR the legacy single field.
+      filter.$and = [{ $or: [{ categories: { $in: ids } }, { category: { $in: ids } }] }];
     } else {
       filter.category = null; // no match → empty result
     }

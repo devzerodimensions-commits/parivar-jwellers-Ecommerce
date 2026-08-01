@@ -55,7 +55,9 @@ export const deleteCategory = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error('Category not found.');
   }
-  const inUse = await Product.countDocuments({ category: category._id });
+  const inUse = await Product.countDocuments({
+    $or: [{ category: category._id }, { categories: category._id }],
+  });
   if (inUse > 0) {
     res.status(400);
     throw new Error(`Cannot delete: ${inUse} product(s) use this category.`);
