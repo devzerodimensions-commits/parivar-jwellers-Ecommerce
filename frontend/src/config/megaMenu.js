@@ -46,6 +46,10 @@ const MATERIALS = ['Gold', 'Diamond', 'Silver', 'Platinum', 'Gemstone']; // Prod
 const GENDERS = ['Women', 'Men', 'Kids', 'Unisex']; // Product.gender enum
 const CARATS = { '18 Carat': '18', '20 Carat': '20', '22 Carat': '22', '24 Carat': '24' };
 
+// Groups whose items describe the product TYPE / occasion / style. These are picked
+// per-product in the admin form (the product's `types` field) and filtered exactly.
+export const TYPE_GROUPS = ['Jewellery', 'Wedding', 'Others'];
+
 // Where each mega-menu item points:
 //   • Metals → filter by the product's Material field   (e.g. Gold, Diamond)
 //   • For    → filter by the product's Gender field     (e.g. Women, Men, Kids)
@@ -55,5 +59,6 @@ export const menuLink = (item, group) => {
   if (group === 'Metals' && MATERIALS.includes(item)) return `/shop?material=${encodeURIComponent(item)}`;
   if (group === 'For' && GENDERS.includes(item)) return `/shop?gender=${encodeURIComponent(item)}`;
   if (group === 'Purity' && CARATS[item]) return `/shop?purity=${CARATS[item]}`;
+  if (TYPE_GROUPS.includes(group)) return `/shop?type=${encodeURIComponent(item)}`;
   return `/search?q=${encodeURIComponent(item)}`;
 };

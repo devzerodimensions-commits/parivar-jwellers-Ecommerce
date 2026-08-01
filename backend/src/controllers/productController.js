@@ -36,6 +36,16 @@ const buildStoreFilter = async (query) => {
     }
   }
 
+  // Browse-menu type (Necklace, Bridal Set, Temple Jewellery…): products explicitly
+  // assigned this type, OR (fallback) whose name/tags contain the term.
+  if (query.type) {
+    const terms = query.type.split(',').map((t) => t.trim()).filter(Boolean);
+    if (terms.length) {
+      const rx = terms.map((t) => new RegExp(t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'));
+      filter.$or = [{ types: { $in: terms } }, { name: { $in: rx } }, { tags: { $in: rx } }];
+    }
+  }
+
   // Price range (matches against base price).
   if (query.minPrice || query.maxPrice) {
     filter.price = {};
@@ -55,6 +65,7 @@ const buildStoreFilter = async (query) => {
       { name: { $regex: term, $options: 'i' } },
       { description: { $regex: term, $options: 'i' } },
       { tags: { $regex: term, $options: 'i' } },
+      { types: { $regex: term, $options: 'i' } },
       { sku: { $regex: term, $options: 'i' } },
     ];
   }

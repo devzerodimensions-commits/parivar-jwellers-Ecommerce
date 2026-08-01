@@ -6,6 +6,7 @@ import api from '../../api/axios.js';
 import Spinner from '../../components/ui/Spinner.jsx';
 import ImageUploader from '../../components/admin/ImageUploader.jsx';
 import { useSettings } from '../../context/SettingsContext.jsx';
+import { MEGA_MENU, TYPE_GROUPS } from '../../config/megaMenu.js';
 
 const blank = {
   name: '',
@@ -26,6 +27,7 @@ const blank = {
   gender: 'Women',
   images: [],
   attributes: [],
+  types: [],
   isFeatured: false,
   isNewArrival: false,
   isBestSeller: false,
@@ -71,6 +73,7 @@ const ProductForm = () => {
           salePrice: p.salePrice ?? '',
           images: p.images || [],
           attributes: p.attributes || [],
+          types: p.types || [],
         });
       })
       .catch(() => toast.error('Could not load product'))
@@ -88,6 +91,12 @@ const ProductForm = () => {
       attributes[i] = { ...attributes[i], [key]: val };
       return { ...f, attributes };
     });
+
+  const toggleType = (t) =>
+    setForm((f) => ({
+      ...f,
+      types: (f.types || []).includes(t) ? f.types.filter((x) => x !== t) : [...(f.types || []), t],
+    }));
 
   const submit = async (e) => {
     e.preventDefault();
@@ -238,6 +247,38 @@ const ProductForm = () => {
                 <FaPlus /> Add attribute
               </button>
             </div>
+          </section>
+
+          <section className="card space-y-4 p-6">
+            <h3 className="font-serif text-lg">Browse Menu Categories</h3>
+            <p className="text-xs text-charcoal/50">
+              Tick where this product should appear in the top navigation menu (e.g. Necklace,
+              Bridal Set, Temple Jewellery). You can pick more than one.
+            </p>
+            {MEGA_MENU.filter((g) => TYPE_GROUPS.includes(g.title)).map((g) => (
+              <div key={g.title}>
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gold-700">{g.title}</p>
+                <div className="flex flex-wrap gap-2">
+                  {g.items.map((item) => {
+                    const on = (form.types || []).includes(item);
+                    return (
+                      <button
+                        type="button"
+                        key={item}
+                        onClick={() => toggleType(item)}
+                        className={`rounded-full border px-3 py-1 text-xs transition ${
+                          on
+                            ? 'border-gold-500 bg-gold-50 text-gold-700'
+                            : 'border-charcoal/20 text-charcoal/60 hover:border-gold-300'
+                        }`}
+                      >
+                        {item}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </section>
         </div>
 

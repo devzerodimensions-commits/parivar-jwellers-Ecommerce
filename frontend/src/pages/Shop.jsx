@@ -44,6 +44,7 @@ const Shop = () => {
   const minPrice = searchParams.get('minPrice') || '';
   const maxPrice = searchParams.get('maxPrice') || '';
   const purity = searchParams.get('purity') || '';
+  const type = searchParams.get('type') || '';
 
   // Load filter options once.
   useEffect(() => {
@@ -65,7 +66,7 @@ const Shop = () => {
     const params = new URLSearchParams();
     if (slug) params.set('category', slug);
     if (isSearch && search) params.set('search', search);
-    ['brand', 'material', 'gender', 'purity'].forEach((k) => {
+    ['brand', 'material', 'gender', 'purity', 'type'].forEach((k) => {
       const v = searchParams.get(k);
       if (v) params.set(k, v);
     });
@@ -113,6 +114,8 @@ const Shop = () => {
     ? category.name
     : isSearch
     ? `Search: ${search}`
+    : type
+    ? type
     : purity
     ? `${purity} Carat Jewellery`
     : 'All Jewellery';
@@ -121,7 +124,8 @@ const Shop = () => {
     selected.material.length +
     selected.gender.length +
     (minPrice || maxPrice ? 1 : 0) +
-    (purity ? 1 : 0);
+    (purity ? 1 : 0) +
+    (type ? 1 : 0);
 
   return (
     <div className="container-page py-8">
