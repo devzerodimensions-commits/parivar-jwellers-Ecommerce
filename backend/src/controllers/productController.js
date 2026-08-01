@@ -129,21 +129,31 @@ export const getFeatured = asyncHandler(async (req, res) => {
   res.json({ success: true, products });
 });
 
-// @route GET /api/products/new-arrivals
-export const getNewArrivals = asyncHandler(async (req, res) => {
-  const products = await Product.find({ isActive: true })
+// Hybrid home-page section: products the admin flagged (toggle) come FIRST, then
+// the remaining slots auto-fill (so the toggle always works AND the section is
+// never sparse). `flag` = isNewArrival / isBestSeller; `autoSort` = the fallback order.
+const buildSection = async (flag, autoSort, limit) => {
+  const pinned = await Product.find({ isActive: true, [flag]: true })
     .populate('category', 'name slug')
     .sort('-createdAt')
-    .limit(Number(req.query.limit) || 8);
+    .limit(limit);
+  if (pinned.length >= limit) return pinned;
+  const fill = await Product.find({ isActive: true, _id: { $nin: pinned.map((p) => p._id) } })
+    .populate('category', 'name slug')
+    .sort(autoSort)
+    .limit(limit - pinned.length);
+  return [...pinned, ...fill];
+};
+
+// @route GET /api/products/new-arrivals — flagged first, then newest.
+export const getNewArrivals = asyncHandler(async (req, res) => {
+  const products = await buildSection('isNewArrival', '-createdAt', Number(req.query.limit) || 8);
   res.json({ success: true, products });
 });
 
-// @route GET /api/products/best-sellers
+// @route GET /api/products/best-sellers — flagged first, then most-sold / top-rated / newest.
 export const getBestSellers = asyncHandler(async (req, res) => {
-  const products = await Product.find({ isActive: true })
-    .populate('category', 'name slug')
-    .sort('-soldCount -ratingAverage')
-    .limit(Number(req.query.limit) || 8);
+  const products = await buildSection('isBestSeller', '-soldCount -ratingAverage -createdAt', Number(req.query.limit) || 8);
   res.json({ success: true, products });
 });
 

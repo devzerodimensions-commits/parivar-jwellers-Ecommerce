@@ -275,11 +275,15 @@ const ProductForm = () => {
           </section>
 
           <section className="card space-y-3 p-6">
-            <h3 className="font-serif text-lg">Visibility</h3>
+            <h3 className="font-serif text-lg">Visibility &amp; Home sections</h3>
             <Toggle label="Active (visible in store)" checked={form.isActive} onChange={set('isActive')} />
-            <Toggle label="Featured" checked={form.isFeatured} onChange={set('isFeatured')} />
-            <Toggle label="New arrival" checked={form.isNewArrival} onChange={set('isNewArrival')} />
-            <Toggle label="Best seller" checked={form.isBestSeller} onChange={set('isBestSeller')} />
+            <Toggle label="Featured — show in “Featured Pieces”" checked={form.isFeatured} onChange={set('isFeatured')} />
+            <Toggle label="New arrival — show in “New Arrivals”" checked={form.isNewArrival} onChange={set('isNewArrival')} />
+            <Toggle label="Best seller — show in “Best Sellers”" checked={form.isBestSeller} onChange={set('isBestSeller')} />
+            <p className="text-xs text-charcoal/40">
+              Turn a toggle on to pin this product to that home-page section. “New Arrivals” and
+              “Best Sellers” also auto-fill with your latest products when nothing is pinned.
+            </p>
           </section>
 
           <section className="card space-y-4 p-6">
