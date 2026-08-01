@@ -51,9 +51,6 @@ const productSchema = new mongoose.Schema(
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
     brand: { type: mongoose.Schema.Types.ObjectId, ref: 'Brand' },
     tags: [String],
-    // Browse-menu categories this product belongs to (e.g. Necklace, Bridal Set,
-    // Temple Jewellery) — set from the product form, used by the top nav menu.
-    types: { type: [String], default: [], index: true },
 
     images: [imageSchema],
 
