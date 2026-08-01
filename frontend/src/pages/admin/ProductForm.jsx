@@ -153,40 +153,73 @@ const ProductForm = () => {
           <section className="card space-y-4 p-6">
             <Field label="Name" value={form.name} onChange={set('name')} required />
             <Field label="SKU (optional)" value={form.sku} onChange={set('sku')} placeholder="Leave blank if not needed" />
-            <div className="space-y-4">
-              <label className="label">Categories</label>
-              <p className="-mt-2 text-xs text-charcoal/50">
-                Tick every category this product should appear in — Menu (top nav) and/or Shop (home).
-                It can be in more than one.
-              </p>
+            <div className="space-y-5">
+              <div>
+                <label className="label">Categories</label>
+                <p className="text-xs text-charcoal/50">
+                  Tick every category this product should appear in — Menu (top nav) and/or Shop (home).
+                  It can be in more than one.
+                </p>
+              </div>
               {[
                 { grp: 'menu', label: 'Menu Categories (top navigation)' },
                 { grp: 'shop', label: 'Shop Categories (home page)' },
               ].map(({ grp, label }) => {
-                const list = categories.filter((c) => (c.group || 'shop') === grp);
-                if (!list.length) return null;
+                const inGroup = categories.filter((c) => (c.group || 'shop') === grp);
+                if (!inGroup.length) return null;
+                const mains = inGroup
+                  .filter((c) => !c.parent)
+                  .sort((a, b) => (a.order || 0) - (b.order || 0) || a.name.localeCompare(b.name));
                 return (
-                  <div key={grp}>
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gold-700">{label}</p>
-                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                      {list.map((c) => {
-                        const on = form.categories.includes(c._id);
+                  <div key={grp} className="space-y-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-gold-700">{label}</p>
+                    <div className="space-y-3">
+                      {mains.map((main) => {
+                        const subs = inGroup
+                          .filter((c) => String(c.parent) === String(main._id))
+                          .sort((a, b) => a.name.localeCompare(b.name));
+                        const mainOn = form.categories.includes(main._id);
                         return (
-                          <label
-                            key={c._id}
-                            className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm ${
-                              on ? 'border-gold-400 bg-gold-50' : 'border-charcoal/15 hover:border-gold-300'
-                            }`}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={on}
-                              onChange={() => toggleCategory(c._id)}
-                              className="h-4 w-4 rounded text-gold-600 focus:ring-gold-500"
-                            />
-                            {c.parent ? <span className="text-charcoal/40">↳&nbsp;</span> : null}
-                            {c.name}
-                          </label>
+                          <div key={main._id}>
+                            {/* Main category */}
+                            <label
+                              className={`flex w-fit cursor-pointer items-center gap-2 rounded-md border px-3 py-1.5 text-sm font-semibold ${
+                                mainOn ? 'border-gold-400 bg-gold-50' : 'border-charcoal/15 hover:border-gold-300'
+                              }`}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={mainOn}
+                                onChange={() => toggleCategory(main._id)}
+                                className="h-4 w-4 rounded text-gold-600 focus:ring-gold-500"
+                              />
+                              {main.name}
+                            </label>
+                            {/* Sub-categories, indented */}
+                            {subs.length > 0 && (
+                              <div className="ml-5 mt-2 grid grid-cols-2 gap-1.5 border-l border-charcoal/10 pl-3 sm:grid-cols-3">
+                                {subs.map((s) => {
+                                  const on = form.categories.includes(s._id);
+                                  return (
+                                    <label
+                                      key={s._id}
+                                      className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-1.5 text-sm ${
+                                        on ? 'border-gold-400 bg-gold-50' : 'border-charcoal/15 hover:border-gold-300'
+                                      }`}
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        checked={on}
+                                        onChange={() => toggleCategory(s._id)}
+                                        className="h-4 w-4 rounded text-gold-600 focus:ring-gold-500"
+                                      />
+                                      {s.name}
+                                    </label>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
                         );
                       })}
                     </div>
