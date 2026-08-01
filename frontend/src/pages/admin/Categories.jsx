@@ -56,8 +56,22 @@ const Categories = () => {
     }
   };
 
-  const nameById = Object.fromEntries(items.map((c) => [c._id, c.name]));
   const visible = items.filter((c) => (c.group || 'shop') === tab);
+  // Order rows like WordPress: each MAIN category followed by its sub-categories.
+  const ordered = [];
+  visible
+    .filter((c) => !c.parent)
+    .sort((a, b) => (a.order || 0) - (b.order || 0) || a.name.localeCompare(b.name))
+    .forEach((main) => {
+      ordered.push({ ...main, depth: 0 });
+      visible
+        .filter((c) => String(c.parent) === String(main._id))
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .forEach((sub) => ordered.push({ ...sub, depth: 1 }));
+    });
+  const seen = new Set(ordered.map((c) => c._id));
+  visible.filter((c) => !seen.has(c._id)).forEach((c) => ordered.push({ ...c, depth: c.parent ? 1 : 0 }));
+
   const switchTab = (t) => {
     setTab(t);
     setEditId(null);
@@ -156,20 +170,17 @@ const Categories = () => {
                 </tr>
               </thead>
               <tbody>
-                {visible.map((c) => (
-                  <tr key={c._id} className="border-t border-charcoal/10">
+                {ordered.map((c) => (
+                  <tr key={c._id} className={`border-t border-charcoal/10 ${c.depth === 0 ? 'bg-cream/40' : ''}`}>
                     <td className="p-3">
-                      <div className="flex items-center gap-3">
+                      <div className={`flex items-center gap-3 ${c.depth ? 'pl-8' : ''}`}>
                         {c.image && <img src={c.image} alt="" className="h-9 w-9 rounded object-cover" />}
                         <div>
-                          <p className="font-medium">
-                            {c.parent && <span className="text-charcoal/40">↳ </span>}
+                          <p className={c.depth ? 'text-sm text-charcoal/80' : 'font-semibold text-charcoal'}>
+                            {c.depth ? <span className="text-charcoal/40">— </span> : null}
                             {c.name}
                           </p>
-                          <p className="text-xs text-charcoal/40">
-                            /{c.slug}
-                            {c.parent && nameById[c.parent] ? ` · under ${nameById[c.parent]}` : ''}
-                          </p>
+                          <p className="text-[11px] text-charcoal/40">/{c.slug}</p>
                         </div>
                       </div>
                     </td>
