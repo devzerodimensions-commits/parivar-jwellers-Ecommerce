@@ -209,7 +209,7 @@ const MegaGroup = ({ group }) => {
               {group.items.map((item) => (
                 <li key={item}>
                   <Link
-                    to={menuLink(item)}
+                    to={menuLink(item, group.title)}
                     className="block whitespace-nowrap text-sm text-charcoal/75 transition-colors hover:text-gold-700"
                   >
                     {item}
@@ -241,7 +241,7 @@ const MobileGroup = ({ group, onNavigate }) => {
           {group.items.map((item) => (
             <li key={item}>
               <Link
-                to={menuLink(item)}
+                to={menuLink(item, group.title)}
                 onClick={onNavigate}
                 className="block py-1 text-sm text-charcoal/70 hover:text-gold-700"
               >

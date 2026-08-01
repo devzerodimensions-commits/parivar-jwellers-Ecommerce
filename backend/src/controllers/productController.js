@@ -28,7 +28,13 @@ const buildStoreFilter = async (query) => {
   }
   if (query.material) filter.material = { $in: query.material.split(',') };
   if (query.gender) filter.gender = { $in: query.gender.split(',') };
-  if (query.purity) filter.purity = { $in: query.purity.split(',') };
+  if (query.purity) {
+    // Partial, case-insensitive match so "22" finds "22K", "22 Carat", "22K BIS 916".
+    const terms = query.purity.split(',').map((t) => t.trim()).filter(Boolean);
+    if (terms.length) {
+      filter.purity = { $in: terms.map((t) => new RegExp(t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')) };
+    }
+  }
 
   // Price range (matches against base price).
   if (query.minPrice || query.maxPrice) {

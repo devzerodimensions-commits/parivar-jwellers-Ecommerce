@@ -40,6 +40,20 @@ export const MEGA_MENU = [
   },
 ];
 
-// Where each mega-menu item points. Uses the site search so it lists
-// products matching that keyword (e.g. "Necklace", "Gold", "22 Carat").
-export const menuLink = (item) => `/search?q=${encodeURIComponent(item)}`;
+// Product-field values these menu items map to, so results are EXACT (by field),
+// not just a text match on the product name.
+const MATERIALS = ['Gold', 'Diamond', 'Silver', 'Platinum', 'Gemstone']; // Product.material enum
+const GENDERS = ['Women', 'Men', 'Kids', 'Unisex']; // Product.gender enum
+const CARATS = { '18 Carat': '18', '20 Carat': '20', '22 Carat': '22', '24 Carat': '24' };
+
+// Where each mega-menu item points:
+//   • Metals → filter by the product's Material field   (e.g. Gold, Diamond)
+//   • For    → filter by the product's Gender field     (e.g. Women, Men, Kids)
+//   • Purity → filter by the product's Purity field     ("22" matches 22K / 22 Carat)
+//   • Everything else → keyword search across name / tags / description.
+export const menuLink = (item, group) => {
+  if (group === 'Metals' && MATERIALS.includes(item)) return `/shop?material=${encodeURIComponent(item)}`;
+  if (group === 'For' && GENDERS.includes(item)) return `/shop?gender=${encodeURIComponent(item)}`;
+  if (group === 'Purity' && CARATS[item]) return `/shop?purity=${CARATS[item]}`;
+  return `/search?q=${encodeURIComponent(item)}`;
+};
