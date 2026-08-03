@@ -197,16 +197,18 @@ const ProductDetail = () => {
             </div>
           ))}
 
-          {/* Stock + quantity + actions */}
-          <div className="mt-6">
-            {outOfStock ? (
-              <p className="font-medium text-red-600">Currently out of stock</p>
-            ) : lowStock ? (
-              <p className="text-sm font-medium text-orange-600">Only {product.stock} left in stock</p>
-            ) : (
-              <p className="text-sm font-medium text-green-600">In stock</p>
-            )}
-          </div>
+          {/* Stock status — only relevant when selling online (hidden in enquiry mode). */}
+          {!enquiryMode && (
+            <div className="mt-6">
+              {outOfStock ? (
+                <p className="font-medium text-red-600">Currently out of stock</p>
+              ) : lowStock ? (
+                <p className="text-sm font-medium text-orange-600">Only {product.stock} left in stock</p>
+              ) : (
+                <p className="text-sm font-medium text-green-600">In stock</p>
+              )}
+            </div>
+          )}
 
           <div className="mt-4 flex flex-wrap items-center gap-3">
             {enquiryMode ? (
