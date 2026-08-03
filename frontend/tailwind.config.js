@@ -18,10 +18,11 @@ export default {
           800: '#5A461a',
           900: '#3B2E11',
         },
+        // Deep teal (brand dark) — used for text, dark sections, buttons & badges.
         charcoal: {
-          DEFAULT: '#1A1A1A',
-          800: '#222222',
-          700: '#2E2E2E',
+          DEFAULT: '#091E26',
+          800: '#0E2A33',
+          700: '#16404D',
         },
         cream: '#FBF8F1',
       },
@@ -30,7 +31,7 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
-        card: '0 4px 20px -8px rgba(26,26,26,0.18)',
+        card: '0 4px 20px -8px rgba(9,30,38,0.18)',
       },
     },
   },

@@ -39,7 +39,7 @@ const GoldRateDisplay = () => {
   });
 
   return (
-    <div className="flex min-h-screen flex-col overflow-y-auto bg-gradient-to-b from-[#1c1c1c] via-charcoal to-black text-cream sm:h-screen sm:overflow-hidden">
+    <div className="flex min-h-screen flex-col overflow-y-auto bg-gradient-to-b from-[#0E2A33] via-charcoal to-black text-cream sm:h-screen sm:overflow-hidden">
       <Seo title="Today's Gold Rate" description={`Today's live gold rate at ${settings.siteName}.`} />
 
       {/* Brand */}
