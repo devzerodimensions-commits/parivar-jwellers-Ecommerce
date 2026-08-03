@@ -59,6 +59,7 @@ import AdminMedia from './pages/admin/Media.jsx';
 import AdminEnquiries from './pages/admin/Enquiries.jsx';
 import AdminSettings from './pages/admin/Settings.jsx';
 import AdminGoldRate from './pages/admin/GoldRate.jsx';
+import AdminSubscribers from './pages/admin/Subscribers.jsx';
 
 const App = () => (
   <>
@@ -159,6 +160,7 @@ const App = () => (
         <Route path="blog/:id/edit" element={<BlogForm />} />
         <Route path="reviews" element={<AdminReviews />} />
         <Route path="media" element={<AdminMedia />} />
+        <Route path="subscribers" element={<AdminSubscribers />} />
         <Route path="enquiries" element={<AdminEnquiries />} />
         <Route path="settings" element={<AdminSettings />} />
       </Route>
