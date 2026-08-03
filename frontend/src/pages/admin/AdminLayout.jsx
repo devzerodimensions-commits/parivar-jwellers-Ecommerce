@@ -21,6 +21,7 @@ import {
   FaPhotoVideo,
   FaEnvelopeOpenText,
   FaEnvelope,
+  FaUserFriends,
   FaCoins,
 } from 'react-icons/fa';
 import { Helmet } from 'react-helmet-async';
@@ -66,6 +67,7 @@ const NAV = [
     ],
   },
   { type: 'link', to: '/admin/media', label: 'Media', icon: <FaPhotoVideo />, cap: 'media' },
+  { type: 'link', to: '/admin/customers', label: 'Customers', icon: <FaUserFriends />, cap: 'users' },
   { type: 'link', to: '/admin/subscribers', label: 'Subscribers', icon: <FaEnvelope />, cap: 'users' },
   { type: 'link', to: '/admin/users', label: 'Users', icon: <FaUsers />, cap: 'users' },
   { type: 'link', to: '/admin/settings', label: 'Settings', icon: <FaCog />, cap: 'settings' },
