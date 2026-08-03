@@ -22,6 +22,13 @@ const app = express();
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: 'cross-origin' }, // allow images to load on the SPA origin
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        // Allow images from our own origin, data/blob URIs, and Cloudinary (uploaded media).
+        'img-src': ["'self'", 'data:', 'blob:', 'https://res.cloudinary.com'],
+      },
+    },
   })
 );
 app.use(
