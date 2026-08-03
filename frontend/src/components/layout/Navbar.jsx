@@ -58,7 +58,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-charcoal/10 bg-white/95 backdrop-blur">
+    <header className="relative z-40 border-b border-charcoal/10 bg-white/95 backdrop-blur">
       <div className="container-page">
         {/* Top row */}
         <div className="flex items-center gap-4 py-4">
