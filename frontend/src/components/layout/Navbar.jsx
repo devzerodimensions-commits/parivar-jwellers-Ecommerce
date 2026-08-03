@@ -131,7 +131,7 @@ const Navbar = () => {
                         <p className="truncate text-xs text-charcoal/50">{user.email}</p>
                       </div>
                       <DropLink to="/account">My Account</DropLink>
-                      <DropLink to="/account/orders">My Orders</DropLink>
+                      {!settings.enquiryMode && <DropLink to="/account/orders">My Orders</DropLink>}
                       {isAdmin && (
                         <DropLink to="/admin/dashboard">
                           <FaThLarge className="mr-2 inline" /> Admin Panel
