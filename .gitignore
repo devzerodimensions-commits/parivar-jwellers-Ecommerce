@@ -30,3 +30,6 @@ Thumbs.db
 # Misc
 coverage/
 *.docx
+
+# Local source images (originals kept locally; optimised copies live on Cloudinary)
+/images/
