@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 // Image with native lazy-loading and a fade-in once loaded (skeleton until then).
-const LazyImage = ({ src, alt = '', className = '', ...rest }) => {
+const LazyImage = ({ src, alt = '', className = '', imgClassName = 'object-cover', ...rest }) => {
   const [loaded, setLoaded] = useState(false);
   return (
     <div className={`relative overflow-hidden ${className}`}>
@@ -12,7 +12,7 @@ const LazyImage = ({ src, alt = '', className = '', ...rest }) => {
         loading="lazy"
         decoding="async"
         onLoad={() => setLoaded(true)}
-        className={`h-full w-full object-cover transition-opacity duration-500 ${
+        className={`h-full w-full ${imgClassName} transition-opacity duration-500 ${
           loaded ? 'opacity-100' : 'opacity-0'
         }`}
         {...rest}

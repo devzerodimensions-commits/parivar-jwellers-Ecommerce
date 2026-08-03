@@ -23,7 +23,7 @@ const ProductCard = ({ product }) => {
   const outOfStock = product.stock <= 0;
 
   return (
-    <div className="group card relative overflow-hidden">
+    <div className="group card relative flex h-full flex-col overflow-hidden">
       {/* Badges */}
       <div className="absolute left-3 top-3 z-10 flex flex-col gap-1">
         {!enquiryMode && off > 0 && <span className="badge bg-gold-600 text-white">-{off}%</span>}
@@ -45,10 +45,11 @@ const ProductCard = ({ product }) => {
           src={product.images?.[0]?.url}
           alt={product.images?.[0]?.alt || product.name}
           className="aspect-square w-full bg-cream"
+          imgClassName="object-contain"
         />
       </Link>
 
-      <div className="p-4">
+      <div className="flex flex-1 flex-col p-4">
         {product.category?.name && (
           <p className="mb-1 text-xs uppercase tracking-wide text-charcoal/40">
             {product.category.name}
@@ -70,12 +71,12 @@ const ProductCard = ({ product }) => {
           <button
             type="button"
             onClick={() => setEnquiryOpen(true)}
-            className="mt-3 flex w-full items-center justify-center gap-2 rounded-md border border-gold-500 py-2 text-sm font-medium text-gold-700 transition-colors hover:bg-gold-600 hover:text-white"
+            className="mt-auto flex w-full items-center justify-center gap-2 rounded-md border border-gold-500 py-2 text-sm font-medium text-gold-700 transition-colors hover:bg-gold-600 hover:text-white"
           >
             <FaEnvelopeOpenText className="text-xs" /> Enquire
           </button>
         ) : (
-          <div className="mt-2 flex items-end justify-between">
+          <div className="mt-auto flex items-end justify-between pt-2">
             <div>
               <span className="text-lg font-semibold text-charcoal">{formatPrice(price, symbol)}</span>
               {off > 0 && (
