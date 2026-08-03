@@ -76,7 +76,7 @@ const Footer = () => {
         <FooterCol title="Help">
           <FLink to="/page/faq">FAQ</FLink>
           <FLink to="/page/shipping-returns">Shipping & Returns</FLink>
-          <FLink to="/track-order">Track Order</FLink>
+          {!settings.enquiryMode && <FLink to="/track-order">Track Order</FLink>}
           <FLink to="/page/contact">Contact Us</FLink>
           <FLink to="/policy">Privacy Policy</FLink>
         </FooterCol>
