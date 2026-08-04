@@ -127,16 +127,18 @@ const Settings = () => {
           <Field label="Twitter" value={settings.social?.twitter} onChange={(v) => setNested('social', 'twitter', v)} />
         </Section>
 
-        {/* Commerce */}
-        <Section title="Shipping & Tax">
-          <Field label="Free shipping threshold (₹)" type="number" value={settings.shipping?.freeShippingThreshold} onChange={(v) => setNested('shipping', 'freeShippingThreshold', Number(v))} />
-          <Field label="Flat shipping rate (₹)" type="number" value={settings.shipping?.flatRate} onChange={(v) => setNested('shipping', 'flatRate', Number(v))} />
-          <Field label="Tax rate (%)" type="number" value={settings.tax?.rate} onChange={(v) => setNested('tax', 'rate', Number(v))} />
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Currency code" value={settings.currency?.code} onChange={(v) => setNested('currency', 'code', v)} />
-            <Field label="Currency symbol" value={settings.currency?.symbol} onChange={(v) => setNested('currency', 'symbol', v)} />
-          </div>
-        </Section>
+        {/* Commerce — only relevant when selling online (hidden in enquiry mode). */}
+        {!settings.enquiryMode && (
+          <Section title="Shipping & Tax">
+            <Field label="Free shipping threshold (₹)" type="number" value={settings.shipping?.freeShippingThreshold} onChange={(v) => setNested('shipping', 'freeShippingThreshold', Number(v))} />
+            <Field label="Flat shipping rate (₹)" type="number" value={settings.shipping?.flatRate} onChange={(v) => setNested('shipping', 'flatRate', Number(v))} />
+            <Field label="Tax rate (%)" type="number" value={settings.tax?.rate} onChange={(v) => setNested('tax', 'rate', Number(v))} />
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Currency code" value={settings.currency?.code} onChange={(v) => setNested('currency', 'code', v)} />
+              <Field label="Currency symbol" value={settings.currency?.symbol} onChange={(v) => setNested('currency', 'symbol', v)} />
+            </div>
+          </Section>
+        )}
 
         {/* SMTP */}
         <Section title="Email (SMTP)">
